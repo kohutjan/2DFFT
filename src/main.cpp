@@ -3,6 +3,7 @@
 #include <getopt.h>
 
 #include "run.hpp"
+#include "filter_container.hpp"
 
 using namespace std;
 
@@ -51,6 +52,9 @@ int main(int argc, char **argv)
 
   Run run;
   run.Load(runFilePath);
+
+  FilterContainer filterContainer;
+  filterContainer.Load(filtersFilePath);
 
   return 0;
 }
