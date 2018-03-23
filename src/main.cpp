@@ -2,6 +2,8 @@
 #include <string>
 #include <getopt.h>
 
+#include "run.hpp"
+
 using namespace std;
 
 int main(int argc, char **argv)
@@ -46,6 +48,9 @@ int main(int argc, char **argv)
     cout << "Paths to run and filters files have to be set." << endl;
     return -1;
   }
+
+  Run run;
+  run.Load(runFilePath);
 
   return 0;
 }

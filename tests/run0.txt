@@ -1,0 +1,2 @@
+images_folder /path/to/images
+iterations 500
