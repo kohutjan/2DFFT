@@ -14,7 +14,7 @@ class FilterLoader
     FilterLoader(){}
     bool Load(std::string filtersFilePath);
     void LoadFromStream(std::ifstream &filtersStream);
-    cv::Mat LoadMean(int kernelSize, std::ifstream &filtersStream);
+    cv::Mat LoadMean(int kernelSize);
     cv::Mat LoadGauss(int kernelSize, std::ifstream &filtersStream);
     cv::Mat LoadCustom(int kernelSize, std::ifstream &filtersStream);
     void PrintFilter(Filter filter);
