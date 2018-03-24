@@ -35,12 +35,16 @@ void FilterLoader::LoadFromStream(ifstream &filtersStream)
     filtersStream >> kernelSize;
     if (type == "mean")
     {
-      //Filter mean = Filter(name, type, stride, this->LoadMean(kernelSize, filtersStream))
+      Filter mean = Filter(name, type, this->LoadMean(kernelSize));
+      this->PrintFilter(mean);
+      this->filters[name] = mean;
       continue;
     }
     if (type == "gauss")
     {
-      //Filter gauss = Filter(name, type, stride, this->LoadGauss(kernelSize, filtersStream))
+      Filter gauss = Filter(name, type, this->LoadGauss(kernelSize, filtersStream));
+      this->PrintFilter(gauss);
+      this->filters[name] = gauss;
       continue;
     }
     if (type == "custom")
@@ -55,6 +59,22 @@ void FilterLoader::LoadFromStream(ifstream &filtersStream)
   cout << endl;
   cout << endl;
   return;
+}
+
+Mat FilterLoader::LoadMean(int kernelSize)
+{
+  Mat values = Mat::zeros(Size(kernelSize, kernelSize), CV_32F);
+  float mean = 1.0 / (kernelSize * kernelSize);
+  values.setTo(mean);
+  return values;
+}
+
+Mat FilterLoader::LoadGauss(int kernelSize, ifstream &filtersStream)
+{
+  float sigma;
+  filtersStream >> sigma;
+  Mat values = getGaussianKernel(kernelSize, sigma, CV_32F);
+  return values;
 }
 
 Mat FilterLoader::LoadCustom(int kernelSize, ifstream &filtersStream)
@@ -76,13 +96,16 @@ void FilterLoader::PrintFilter(Filter filter)
   cout << filter.getName() << " ";
   cout << filter.getType() << " ";
   cout << filter.getKernelSize() << " ";
-  Mat values = filter.getValues();
-  for (int i = 0; i < values.rows; i++)
+  if (filter.getType() == "custom")
   {
-    float * rowPtr = values.ptr<float>(i);
-    for (int j = 0; j < values.cols; j++)
+    Mat values = filter.getValues();
+    for (int i = 0; i < values.rows; i++)
     {
-      cout << rowPtr[j] << " ";
+      float * rowPtr = values.ptr<float>(i);
+      for (int j = 0; j < values.cols; j++)
+      {
+        cout << rowPtr[j] << " ";
+      }
     }
   }
   cout << endl;
