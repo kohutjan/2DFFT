@@ -30,7 +30,7 @@ bool Run::Start()
       }
       else
       {
-        cout << "Kernel for " << filter.first << " non-separable.\n";
+        cout << "Kernel for " << filter.first << " is non-separable.\n";
       }
 
       //Prepare sptial convolution
@@ -114,7 +114,6 @@ void Run::InitFilterStatistics()
 
 bool Run::isSeparable(Mat kernel)
 {
-
   Mat sigma;
   int rank = 0;
 
