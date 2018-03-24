@@ -7,25 +7,36 @@ using namespace cv;
 
 bool Run::Start()
 {
+  SpatialConvolution spatialConvolution;
+  FrequencyConvolution frequencyConvolution;
+
   for (auto& imagePath: this->imagePaths)
   {
-    Mat img = imread(imagePath, CV_LOAD_IMAGE_GRAYSCALE);
-    if(!img.data)                              // Check for invalid input
+    Mat src = imread(imagePath, CV_LOAD_IMAGE_GRAYSCALE);
+    if(!src.data)
     {
        cout <<  "Could not open or find the image" << endl;
        return false;
     }
+    Mat dst = src.clone();
+
     for (auto& filter: this->filters)
     {
       //OpenCV Mat for filter: filter.second
 
-      //Call convolutions and measure time (img, filter.second)
+      //Prepare sptial convolution
+      Mat flipedFilter = filter.second.getValues().clone();
+      flip(filter.second.getValues(), flipedFilter, -1);
+      spatialConvolution.setData(src, dst, flipedFilter);
+
+      //Measure time
+      spatialConvolution.Regular();
 
       //Statistic for given filter: this->statistics[filter.first]
 
       //Save statistics
 
-      imshow(filter.first, img);
+      imshow(filter.first, dst);
       waitKey(0);
     }
   }

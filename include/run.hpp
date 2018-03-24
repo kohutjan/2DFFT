@@ -9,6 +9,8 @@
 
 #include "filter.hpp"
 #include "filter_statistic.hpp"
+#include "spatial_convolution.hpp"
+#include "frequency_convolution.hpp"
 
 class Run
 {

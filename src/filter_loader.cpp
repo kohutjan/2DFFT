@@ -31,8 +31,6 @@ void FilterLoader::LoadFromStream(ifstream &filtersStream)
     filtersStream >> name;
     string type;
     filtersStream >> type;
-    int stride;
-    filtersStream >> stride;
     int kernelSize;
     filtersStream >> kernelSize;
     if (type == "mean")
@@ -47,7 +45,7 @@ void FilterLoader::LoadFromStream(ifstream &filtersStream)
     }
     if (type == "custom")
     {
-      Filter custom  = Filter(name, type, stride, this->LoadCustom(kernelSize, filtersStream));
+      Filter custom  = Filter(name, type, this->LoadCustom(kernelSize, filtersStream));
       this->PrintFilter(custom);
       this->filters[name] = custom;
       continue;
@@ -77,7 +75,6 @@ void FilterLoader::PrintFilter(Filter filter)
 {
   cout << filter.getName() << " ";
   cout << filter.getType() << " ";
-  cout << filter.getStride() << " ";
   cout << filter.getKernelSize() << " ";
   Mat values = filter.getValues();
   for (int i = 0; i < values.rows; i++)
