@@ -24,6 +24,15 @@ bool Run::Start()
     {
       //OpenCV Mat for filter: filter.second
 
+      if (isSeparable(filter.second.getValues()))
+      {
+        cout << "Kernel for " << filter.first << " is separable.\n";
+      }
+      else
+      {
+        cout << "Kernel for " << filter.first << " non-separable.\n";
+      }
+
       //Prepare sptial convolution
       Mat flipedFilter = filter.second.getValues().clone();
       flip(filter.second.getValues(), flipedFilter, -1);
@@ -100,5 +109,35 @@ void Run::InitFilterStatistics()
   for (const auto& filter: this->filters)
   {
     this->statistics[filter.first] = FilterStatistic(filter.first);
+  }
+}
+
+bool Run::isSeparable(Mat kernel)
+{
+
+  Mat sigma;
+  int rank = 0;
+
+  /*
+  Computes Single-value decomposition of a matrix M, which separates
+  the input matrix into three matrices U, Sigma and V transposed.
+  By multiplying these three matrices we get the original M again.
+  The sigma matrix is a diagonal matrix the size of M, which has
+  non-zero values on the diagonal only and zeros everywhere else.
+  By counting how many elements of the diagonal are non-zero, we
+  can determine the rank of the original matrix M. This way we can
+  decide whether the kernel is separable (rank == 1) or non-separable
+  (rank != 0) and thus perform the appropriate convolution.
+  */
+  SVD::compute(kernel, sigma);
+  for (auto it = sigma.begin<float>(); it != sigma.end<float>(); it++) {
+    if (*it != 0) rank++;
+  }
+
+  if (rank == 1) {
+    return true;
+  }
+  else {
+    return false;
   }
 }
