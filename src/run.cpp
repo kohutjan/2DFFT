@@ -24,23 +24,31 @@ bool Run::Start()
     {
       //OpenCV Mat for filter: filter.second
 
-      if (isSeparable(filter.second.getValues()))
+      if (this->spatial)
       {
-        cout << "Kernel for " << filter.first << " is separable.\n";
+        //Prepare spatial convolution
+        Mat flipedFilter = filter.second.getValues().clone();
+        flip(filter.second.getValues(), flipedFilter, -1);
+        spatialConvolution.setData(src, dst, flipedFilter);
+
+        //Measure time
+        spatialConvolution.Regular();
       }
-      else
+
+      if (this->separable)
       {
-        cout << "Kernel for " << filter.first << " is non-separable.\n";
+        if (isSeparable(filter.second.getValues()))
+        {
+          spatialConvolution.Separable();
+        }
       }
 
-      //Prepare sptial convolution
-      Mat flipedFilter = filter.second.getValues().clone();
-      flip(filter.second.getValues(), flipedFilter, -1);
-      spatialConvolution.setData(src, dst, flipedFilter);
-
-      //Measure time
-      spatialConvolution.Regular();
-
+      if (this->frequency)
+      {
+        frequencyConvolution.FFT();
+        frequencyConvolution.MUL();
+        frequencyConvolution.IFFT();
+      }
       //Statistic for given filter: this->statistics[filter.first]
 
       //Save statistics
