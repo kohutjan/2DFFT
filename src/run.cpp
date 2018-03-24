@@ -45,8 +45,8 @@ bool Run::Start()
         {
           spatialConvolution.setData(src, dst, kernelX, kernelY);
           spatialConvolution.Separable();
+          imshow(filter.first + " spatial separable", dst);
         }
-        imshow(filter.first + " spatial separable", dst);
       }
 
       if (this->frequency)
@@ -59,6 +59,7 @@ bool Run::Start()
       //Statistic for given filter: this->statistics[filter.first]
 
       //Save statistics
+
     }
     waitKey(0);
   }
@@ -146,8 +147,6 @@ void Run::InitFilterStatistics()
 bool Run::isSeparable(Mat kernel, Mat &kernelX, Mat &kernelY)
 {
   Mat u, sigma, vt;
-  Mat first_col_of_U(3, 1, CV_32F);
-  Mat first_row_of_VT(1, 3, CV_32F);
   int rank = 0;
 
   /*
@@ -184,11 +183,11 @@ bool Run::isSeparable(Mat kernel, Mat &kernelX, Mat &kernelY)
   into two 1D vectors.
   */
   if (rank == 1) { //separable
+    Mat first_col_of_U(u.rows, 1, CV_32F);
+    Mat first_row_of_VT(1, vt.cols, CV_32F);
     u.col(0).copyTo(first_col_of_U.col(0));
     vt.row(0).copyTo(first_row_of_VT.row(0));
-
     first_col_of_U *= sigma.at<float>(0,0);
-
     kernelX = first_col_of_U;
     kernelY = first_row_of_VT;
     return true;
