@@ -13,7 +13,9 @@ include_directories(${2DFFT_SRC_DIR})
 add_executable(2dfft
                ${2DFFT_SRC_DIR}/main.cpp
                ${2DFFT_SRC_DIR}/run.cpp
-               ${2DFFT_SRC_DIR}/filter_loader.cpp)
+               ${2DFFT_SRC_DIR}/filter_loader.cpp
+               ${2DFFT_SRC_DIR}/spatial_convolution.cpp
+               ${2DFFT_SRC_DIR}/frequency_convolution.cpp)
 
 
 target_link_libraries(2dfft ${OpenCV_LIBS})
