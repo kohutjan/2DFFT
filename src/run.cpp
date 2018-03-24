@@ -3,6 +3,12 @@
 
 using namespace std;
 
+
+bool Run::Start()
+{
+
+}
+
 bool Run::Load(string runFilePath)
 {
   cout << "Run file path: " << runFilePath << endl;
@@ -28,10 +34,18 @@ void Run::LoadFromStream(ifstream &runStream)
   {
     string paramName;
     runStream >> paramName;
-    if (paramName == "images_folder")
+    if (paramName == "images")
     {
-      runStream >> this->imagesFolderPath;
-      cout << paramName << ": " << this->imagesFolderPath << endl;
+      int numberOfImages;
+      runStream >> numberOfImages;
+      vector<string> imagePaths(numberOfImages);
+      cout << paramName << ": " << numberOfImages << endl;
+      for (auto& imagePath: imagePaths)
+      {
+        runStream >> imagePath;
+        cout << imagePath << endl;
+      }
+      this->imagePaths = imagePaths;
       continue;
     }
     if (paramName == "iterations")

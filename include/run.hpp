@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <map>
+#include <vector>
 
 #include "filter.hpp"
 #include "filter_statistic.hpp"
@@ -12,9 +13,7 @@
 class Run
 {
   public:
-    Run() : imagesFolderPath(""), iterations(0){}
-    Run(std::string _imagesFolderPath, int _iterations) :
-        imagesFolderPath(_imagesFolderPath), iterations(_iterations){}
+    Run() : iterations(0){}
     bool Load(std::string runFilePath);
     void LoadFromStream(std::ifstream &runStream);
     void setFilters(std::map<std::string, Filter> _filters) { filters = _filters; }
@@ -22,7 +21,7 @@ class Run
     bool Start();
     ~Run(){}
   private:
-    std::string imagesFolderPath;
+    std::vector<std::string> imagePaths;
     int iterations;
     std::map<std::string, Filter> filters;
     std::map<std::string, FilterStatistic> statistics;

@@ -1,2 +1,4 @@
-images_folder /path/to/images
+images 2 
+/path/to/image0.png
+/path/to/image1.png
 iterations 500
