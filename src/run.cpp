@@ -119,13 +119,13 @@ bool Run::isSeparable(Mat kernel)
   int rank = 0;
 
   /*
-  Computes Single-value decomposition of a matrix M, which separates
-  the input matrix into three matrices U, Sigma and V transposed.
-  By multiplying these three matrices we get the original M again.
-  The sigma matrix is a diagonal matrix the size of M, which has
+  Computes the Single-value decomposition of the matrix kernel, which
+  separates the input matrix into three matrices U, Sigma and V transposed.
+  By multiplying these three matrices we get the original kernel again.
+  The sigma matrix is a diagonal matrix the size of kernel, which has
   non-zero values on the diagonal only and zeros everywhere else.
   By counting how many elements of the diagonal are non-zero, we
-  can determine the rank of the original matrix M. This way we can
+  can determine the rank of the original matrix kernel. This way we can
   decide whether the kernel is separable (rank == 1) or non-separable
   (rank != 0) and thus perform the appropriate convolution.
   */
