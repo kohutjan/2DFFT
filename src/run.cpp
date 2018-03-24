@@ -2,11 +2,34 @@
 
 
 using namespace std;
+using namespace cv;
 
 
 bool Run::Start()
 {
+  for (auto& imagePath: this->imagePaths)
+  {
+    Mat img = imread(imagePath, CV_LOAD_IMAGE_GRAYSCALE);
+    if(!img.data)                              // Check for invalid input
+    {
+       cout <<  "Could not open or find the image" << endl;
+       return false;
+    }
+    for (auto& filter: this->filters)
+    {
+      //OpenCV Mat for filter: filter.second
 
+      //Call convolutions and measure time (img, filter.second)
+
+      //Statistic for given filter: this->statistics[filter.first]
+
+      //Save statistics
+
+      imshow(filter.first, img);
+      waitKey(0);
+    }
+  }
+  return true;
 }
 
 bool Run::Load(string runFilePath)

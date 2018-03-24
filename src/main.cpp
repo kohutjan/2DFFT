@@ -58,6 +58,7 @@ int main(int argc, char **argv)
   {
     run.setFilters(filterLoader.getFilters());
     run.InitFilterStatistics();
+    run.Start();
   }
 
   return 0;

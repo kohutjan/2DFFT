@@ -1,4 +1,4 @@
 images 2 
-/path/to/image0.png
-/path/to/image1.png
+../tests/images/norway0.jpg
+../tests/images/norway1.jpg
 iterations 500
