@@ -33,14 +33,20 @@ bool Run::Start()
 
         //Measure time
         spatialConvolution.Regular();
+        imshow(filter.first + " spatial regular", dst);
       }
 
       if (this->separable)
       {
-        if (isSeparable(filter.second.getValues()))
+        Mat kernelX, kernelY;
+        Mat flipedFilter = filter.second.getValues().clone();
+        flip(filter.second.getValues(), flipedFilter, -1);
+        if (isSeparable(flipedFilter, kernelX, kernelY))
         {
+          spatialConvolution.setData(src, dst, kernelX, kernelY);
           spatialConvolution.Separable();
         }
+        imshow(filter.first + " spatial separable", dst);
       }
 
       if (this->frequency)
@@ -48,14 +54,13 @@ bool Run::Start()
         frequencyConvolution.FFT();
         frequencyConvolution.MUL();
         frequencyConvolution.IFFT();
+        imshow(filter.first + " frequency", dst);
       }
       //Statistic for given filter: this->statistics[filter.first]
 
       //Save statistics
-
-      imshow(filter.first, dst);
-      waitKey(0);
     }
+    waitKey(0);
   }
   return true;
 }
@@ -138,9 +143,11 @@ void Run::InitFilterStatistics()
   }
 }
 
-bool Run::isSeparable(Mat kernel)
+bool Run::isSeparable(Mat kernel, Mat &kernelX, Mat &kernelY)
 {
-  Mat sigma;
+  Mat u, sigma, vt;
+  Mat first_col_of_U(3, 1, CV_32F);
+  Mat first_row_of_VT(1, 3, CV_32F);
   int rank = 0;
 
   /*
@@ -154,15 +161,39 @@ bool Run::isSeparable(Mat kernel)
   decide whether the kernel is separable (rank == 1) or non-separable
   (rank != 0) and thus perform the appropriate convolution.
   */
-  SVD::compute(kernel, sigma);
+  SVD::compute(kernel, sigma, u, vt);
   for (auto it = sigma.begin<float>(); it != sigma.end<float>(); it++) {
-    if (*it != 0) rank++;
+    if (*it > 0.00001)
+    {
+       rank++; //threshold for calculation errors, sigma values are never negative
+    }
   }
 
-  if (rank == 1) {
+  /*
+  Since SVD gives us three matrices which when multiplied create the original matrix,
+  we can multiplay U with Sigma and end up with two matrices: UxSigma and VT. These
+  two matrices when multiplied give the original matrix. If the original matrix is
+  separable then Sigma only has a single value larger than zero and that value is
+  at the coordinates of (0,0). Because of that, When we multiply U x Sigma, we get
+  a matrix which can only have non-zero values in the first column. Due to this,
+  when we multiply USigmaxVT, only the first row of VT has any significance.
+  Thanks to these facts, we can simly extract the first column of U and multiply it
+  by Sigma and then extract the first row of VT and we end up with two vectors:
+  first_col_of_U multiplied by Sigma (mx1) and first_row_of_VT (1xn).
+  These two vectors then form the decomposition of the original separable 2D matrix
+  into two 1D vectors.
+  */
+  if (rank == 1) { //separable
+    u.col(0).copyTo(first_col_of_U.col(0));
+    vt.row(0).copyTo(first_row_of_VT.row(0));
+
+    first_col_of_U *= sigma.at<float>(0,0);
+
+    kernelX = first_col_of_U;
+    kernelY = first_row_of_VT;
     return true;
   }
-  else {
+  else { //non-separable
     return false;
   }
 }

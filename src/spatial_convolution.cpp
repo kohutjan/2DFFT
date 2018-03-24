@@ -10,5 +10,6 @@ void SpatialConvolution::Regular()
 
 void SpatialConvolution::Separable()
 {
+  sepFilter2D(this->src, this->dst, -1, this->kernelX, this->kernelY);
   return;
 }

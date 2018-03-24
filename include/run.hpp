@@ -30,7 +30,7 @@ class Run
     bool frequency;
     std::map<std::string, Filter> filters;
     std::map<std::string, FilterStatistic> statistics;
-    bool isSeparable(cv::Mat kernel);
+    bool isSeparable(cv::Mat kernel, cv::Mat &kernelX, cv::Mat &kernelY);
 };
 
 #endif
