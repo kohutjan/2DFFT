@@ -15,7 +15,7 @@
 class Run
 {
   public:
-    Run() : iterations(0){}
+    Run() : iterations(0), spatial(false), separable(false), frequency(false){}
     bool Load(std::string runFilePath);
     void LoadFromStream(std::ifstream &runStream);
     void setFilters(std::map<std::string, Filter> _filters) { filters = _filters; }
@@ -25,6 +25,9 @@ class Run
   private:
     std::vector<std::string> imagePaths;
     int iterations;
+    bool spatial;
+    bool separable;
+    bool frequency;
     std::map<std::string, Filter> filters;
     std::map<std::string, FilterStatistic> statistics;
     bool isSeparable(cv::Mat kernel);

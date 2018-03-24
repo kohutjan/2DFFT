@@ -2,3 +2,5 @@ images 2
 ../tests/images/norway0.jpg
 ../tests/images/norway1.jpg
 iterations 500
+spatial
+

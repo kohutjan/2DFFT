@@ -97,6 +97,24 @@ void Run::LoadFromStream(ifstream &runStream)
       cout << paramName << ": " << this->iterations << endl;
       continue;
     }
+    if (paramName == "spatial")
+    {
+      this->spatial = true;
+      cout << paramName << endl;
+      continue;
+    }
+    if (paramName == "separable")
+    {
+      this->separable = true;
+      cout << paramName << endl;
+      continue;
+    }
+    if (paramName == "frequency")
+    {
+      this->frequency = true;
+      cout << paramName << endl;
+      continue;
+    }
   }
   cout << "#############################################################" << endl;
   cout << endl;
