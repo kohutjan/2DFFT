@@ -13,7 +13,7 @@ include_directories(${2DFFT_SRC_DIR})
 add_executable(2dfft
                ${2DFFT_SRC_DIR}/main.cpp
                ${2DFFT_SRC_DIR}/run.cpp
-               ${2DFFT_SRC_DIR}/filter_container.cpp)
+               ${2DFFT_SRC_DIR}/filter_loader.cpp)
 
 
 target_link_libraries(2dfft ${OpenCV_LIBS})

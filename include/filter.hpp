@@ -7,6 +7,7 @@
 class Filter
 {
   public:
+    Filter(){};
     Filter(std::string _name, std::string _type, int _stride, cv::Mat _values) :
            name(_name), type(_type), stride(_stride), values(_values){}
     std::string getName() const { return name; }
@@ -16,10 +17,10 @@ class Filter
     cv::Mat getValues() const { return values; }
     ~Filter(){}
   private:
-    const std::string name;
-    const std::string type;
-    const int stride;
-    const cv::Mat values;
+    std::string name;
+    std::string type;
+    int stride;
+    cv::Mat values;
 };
 
 #endif

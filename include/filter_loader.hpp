@@ -1,25 +1,27 @@
-#ifndef FILTER_CONTAINER_HPP
-#define FILTER_CONTAINER_HPP
+#ifndef FILTER_LOADER_HPP
+#define FILTER_LOADER_HPP
 
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <vector>
+#include <map>
 
 #include "filter.hpp"
 
-class FilterContainer
+class FilterLoader
 {
   public:
-    FilterContainer(){}
+    FilterLoader(){}
     bool Load(std::string filtersFilePath);
     void LoadFromStream(std::ifstream &filtersStream);
     cv::Mat LoadMean(int kernelSize, std::ifstream &filtersStream);
     cv::Mat LoadGauss(int kernelSize, std::ifstream &filtersStream);
     cv::Mat LoadCustom(int kernelSize, std::ifstream &filtersStream);
     void PrintFilter(Filter filter);
-    std::vector<Filter> filters;
-    ~FilterContainer(){}
+    std::map<std::string, Filter> getFilters() { return filters; }
+    ~FilterLoader(){}
+  private:
+    std::map<std::string, Filter> filters;
 };
 
 #endif

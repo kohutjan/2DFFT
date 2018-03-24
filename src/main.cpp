@@ -3,7 +3,7 @@
 #include <getopt.h>
 
 #include "run.hpp"
-#include "filter_container.hpp"
+#include "filter_loader.hpp"
 
 using namespace std;
 
@@ -53,8 +53,12 @@ int main(int argc, char **argv)
   Run run;
   run.Load(runFilePath);
 
-  FilterContainer filterContainer;
-  filterContainer.Load(filtersFilePath);
+  FilterLoader filterLoader;
+  if (filterLoader.Load(filtersFilePath))
+  {
+    run.setFilters(filterLoader.getFilters());
+    run.InitFilterStatistics();
+  }
 
   return 0;
 }

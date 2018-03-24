@@ -1,10 +1,10 @@
-#include "filter_container.hpp"
+#include "filter_loader.hpp"
 
 
 using namespace std;
 using namespace cv;
 
-bool FilterContainer::Load(string filtersFilePath)
+bool FilterLoader::Load(string filtersFilePath)
 {
   cout << "Filters file path: " << filtersFilePath << endl;
   ifstream filtersStream(filtersFilePath);
@@ -21,7 +21,7 @@ bool FilterContainer::Load(string filtersFilePath)
   }
 }
 
-void FilterContainer::LoadFromStream(ifstream &filtersStream)
+void FilterLoader::LoadFromStream(ifstream &filtersStream)
 {
   cout << "Filters params:" << endl;
   cout << "#############################################################" << endl;
@@ -38,20 +38,18 @@ void FilterContainer::LoadFromStream(ifstream &filtersStream)
     if (type == "mean")
     {
       //Filter mean = Filter(name, type, stride, this->LoadMean(kernelSize, filtersStream))
-      //this->filters.push_back(mean);
       continue;
     }
     if (type == "gauss")
     {
       //Filter gauss = Filter(name, type, stride, this->LoadGauss(kernelSize, filtersStream))
-      //this->filters.push_back(gauss);
       continue;
     }
     if (type == "custom")
     {
-      Filter custom = Filter(name, type, stride, this->LoadCustom(kernelSize, filtersStream));
+      Filter custom  = Filter(name, type, stride, this->LoadCustom(kernelSize, filtersStream));
       this->PrintFilter(custom);
-      this->filters.push_back(custom);
+      this->filters[name] = custom;
       continue;
     }
   }
@@ -61,7 +59,7 @@ void FilterContainer::LoadFromStream(ifstream &filtersStream)
   return;
 }
 
-Mat FilterContainer::LoadCustom(int kernelSize, ifstream &filtersStream)
+Mat FilterLoader::LoadCustom(int kernelSize, ifstream &filtersStream)
 {
   Mat values = Mat::zeros(Size(kernelSize, kernelSize), CV_32F);
   for (int i = 0; i < values.rows; i++)
@@ -75,7 +73,7 @@ Mat FilterContainer::LoadCustom(int kernelSize, ifstream &filtersStream)
   return values;
 }
 
-void FilterContainer::PrintFilter(Filter filter)
+void FilterLoader::PrintFilter(Filter filter)
 {
   cout << filter.getName() << " ";
   cout << filter.getType() << " ";

@@ -46,3 +46,11 @@ void Run::LoadFromStream(ifstream &runStream)
   cout << endl;
   return;
 }
+
+void Run::InitFilterStatistics()
+{
+  for (const auto& filter: this->filters)
+  {
+    this->statistics[filter.first] = FilterStatistic(filter.first);
+  }
+}
