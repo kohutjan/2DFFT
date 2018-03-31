@@ -5,7 +5,7 @@ using namespace std;
 using namespace cv;
 
 
-bool Run::Start()
+bool Run::Start(bool show)
 {
   SpatialConvolution spatialConvolution;
   FrequencyConvolution frequencyConvolution;
@@ -20,32 +20,58 @@ bool Run::Start()
     }
     Mat dst = src.clone();
 
-    for (auto& filter: this->filters)
+    for (auto& filterName: this->filtersInsertOrder)
     {
       //OpenCV Mat for filter: filter.second
 
       if (this->spatial)
       {
         //Prepare spatial convolution
-        Mat flipedFilter = filter.second.getValues().clone();
-        flip(filter.second.getValues(), flipedFilter, -1);
+        Mat flipedFilter = this->filters[filterName].getValues().clone();
+        flip(this->filters[filterName].getValues(), flipedFilter, -1);
         spatialConvolution.setData(src, dst, flipedFilter);
 
         //Measure time
-        spatialConvolution.Regular();
-        imshow(filter.first + " spatial regular", dst);
+        chrono::duration<double, std::milli> duration = std::chrono::milliseconds::zero();
+        for (int i = 0; i < this->iterations; ++i)
+        {
+          auto beginSpatial = chrono::high_resolution_clock::now();
+          spatialConvolution.Regular();
+          auto endSpatial = chrono::high_resolution_clock::now();
+          duration += endSpatial - beginSpatial;
+        }
+        this->statistics[filterName].spatialDurations[imagePath] = duration;
+
+        if (show)
+        {
+          imshow(filterName + " spatial regular", dst);
+        }
       }
 
       if (this->separable)
       {
         Mat kernelX, kernelY;
-        Mat flipedFilter = filter.second.getValues().clone();
-        flip(filter.second.getValues(), flipedFilter, -1);
+        Mat flipedFilter = this->filters[filterName].getValues().clone();
+        flip(this->filters[filterName].getValues(), flipedFilter, -1);
         if (isSeparable(flipedFilter, kernelX, kernelY))
         {
           spatialConvolution.setData(src, dst, kernelX, kernelY);
-          spatialConvolution.Separable();
-          imshow(filter.first + " spatial separable", dst);
+
+          chrono::duration<double, std::milli> duration = std::chrono::milliseconds::zero();
+          for (int i = 0; i < this->iterations; ++i)
+          {
+            auto beginSeparable = chrono::high_resolution_clock::now();
+            spatialConvolution.Separable();
+            auto endSeparable = chrono::high_resolution_clock::now();
+            duration += endSeparable - beginSeparable;
+          }
+
+          this->statistics[filterName].separableDurations[imagePath] = duration;
+
+          if (show)
+          {
+            imshow(filterName + " spatial separable", dst);
+          }
         }
       }
 
@@ -54,16 +80,98 @@ bool Run::Start()
         frequencyConvolution.FFT();
         frequencyConvolution.MUL();
         frequencyConvolution.IFFT();
-        imshow(filter.first + " frequency", dst);
-      }
-      //Statistic for given filter: this->statistics[filter.first]
 
-      //Save statistics
+        if (show)
+        {
+          imshow(filterName + " frequency", dst);
+        }
+      }
 
     }
-    waitKey(0);
+    if (show)
+    {
+      waitKey(0);
+    }
   }
   return true;
+}
+
+void Run::Print()
+{
+  cout << "Statistics" << endl;
+  cout << "#############################################################" << endl;
+  this->PrintToStream(cout);
+  cout << "#############################################################" << endl;
+  cout << endl;
+  cout << endl;
+  return;
+}
+
+bool Run::Print(string statisticsFilePath)
+{
+  cout << "Statics file path: " << statisticsFilePath << endl;
+  filebuf fb;
+  fb.open(statisticsFilePath, ios::out);
+  if (fb.is_open())
+  {
+    ostream statisticsStream(&fb);
+    this->PrintToStream(statisticsStream);
+    fb.close();
+    return true;
+  }
+  else
+  {
+    cerr << "Unable to open statistics file." << endl;
+    return false;
+  }
+}
+
+void Run::PrintToStream(ostream &statisticsStream)
+{
+  statisticsStream << "_____________________________________________________________" << endl;
+  statisticsStream << endl;
+  statisticsStream << "iterations per image: " << this->iterations << endl;
+  statisticsStream << "format: imagePath [spatial_duration] [separable_duration] [frequency_duration]" << endl;
+  statisticsStream << "_____________________________________________________________" << endl;
+  statisticsStream << endl;
+
+  for (auto& filterName: this->filtersInsertOrder)
+  {
+    statisticsStream << filterName << " ";
+    statisticsStream << this->filters[filterName].getType() << " ";
+    statisticsStream << this->filters[filterName].getKernelSize() << endl;
+    statisticsStream << "-------------------------------------------------------------" << endl;
+    for (auto& imagePath: this->imagePaths)
+    {
+      statisticsStream << imagePath << " ";
+      if (this->spatial)
+      {
+        double meanDuration = this->statistics[filterName].spatialDurations[imagePath].count() / this->iterations;
+        statisticsStream <<  meanDuration << " ";
+      }
+      if (this->separable)
+      {
+        //Some filters doesn't have to be separable
+        if (!this->statistics[filterName].separableDurations.empty())
+        {
+          double meanDuration = this->statistics[filterName].separableDurations[imagePath].count() / this->iterations;
+          statisticsStream << meanDuration << " ";
+        }
+        else
+        {
+          statisticsStream << "unsep ";
+        }
+      }
+      if (this->frequency)
+      {
+
+      }
+      statisticsStream << endl;
+    }
+    statisticsStream << "-------------------------------------------------------------" << endl;
+    statisticsStream << endl;
+  }
+  return;
 }
 
 bool Run::Load(string runFilePath)
@@ -138,9 +246,9 @@ void Run::LoadFromStream(ifstream &runStream)
 
 void Run::InitFilterStatistics()
 {
-  for (const auto& filter: this->filters)
+  for (auto& filterName: this->filtersInsertOrder)
   {
-    this->statistics[filter.first] = FilterStatistic(filter.first);
+    this->statistics[filterName] = FilterStatistic(filterName);
   }
 }
 

@@ -6,6 +6,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <chrono>
 
 #include "filter.hpp"
 #include "filter_statistic.hpp"
@@ -18,9 +19,14 @@ class Run
     Run() : iterations(0), spatial(false), separable(false), frequency(false){}
     bool Load(std::string runFilePath);
     void LoadFromStream(std::ifstream &runStream);
-    void setFilters(std::map<std::string, Filter> _filters) { filters = _filters; }
+    void Print();
+    bool Print(std::string statisticsFilePath);
+    void PrintToStream(std::ostream &statisticsStream);
+    void setFilters(std::map<std::string, Filter> _filters,
+                    std::vector<std::string> _filtersInsertOrder)
+                    { filters = _filters; filtersInsertOrder = _filtersInsertOrder; }
     void InitFilterStatistics();
-    bool Start();
+    bool Start(bool show);
     ~Run(){}
   private:
     std::vector<std::string> imagePaths;
@@ -29,6 +35,7 @@ class Run
     bool separable;
     bool frequency;
     std::map<std::string, Filter> filters;
+    std::vector<std::string> filtersInsertOrder;
     std::map<std::string, FilterStatistic> statistics;
     bool isSeparable(cv::Mat kernel, cv::Mat &kernelX, cv::Mat &kernelY);
 };

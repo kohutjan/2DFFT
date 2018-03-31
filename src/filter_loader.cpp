@@ -38,6 +38,7 @@ void FilterLoader::LoadFromStream(ifstream &filtersStream)
       Filter mean = Filter(name, type, this->LoadMean(kernelSize));
       this->PrintFilter(mean);
       this->filters[name] = mean;
+      this->filtersInsertOrder.push_back(name);
       continue;
     }
     if (type == "gauss")
@@ -45,6 +46,7 @@ void FilterLoader::LoadFromStream(ifstream &filtersStream)
       Filter gauss = Filter(name, type, this->LoadGauss(kernelSize, filtersStream));
       this->PrintFilter(gauss);
       this->filters[name] = gauss;
+      this->filtersInsertOrder.push_back(name);
       continue;
     }
     if (type == "custom")
@@ -52,6 +54,7 @@ void FilterLoader::LoadFromStream(ifstream &filtersStream)
       Filter custom  = Filter(name, type, this->LoadCustom(kernelSize, filtersStream));
       this->PrintFilter(custom);
       this->filters[name] = custom;
+      this->filtersInsertOrder.push_back(name);
       continue;
     }
   }

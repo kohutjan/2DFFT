@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <map>
+#include <vector>
 
 #include "filter.hpp"
 
@@ -19,9 +20,11 @@ class FilterLoader
     cv::Mat LoadCustom(int kernelSize, std::ifstream &filtersStream);
     void PrintFilter(Filter filter);
     std::map<std::string, Filter> getFilters() { return filters; }
+    std::vector<std::string> getFiltersInsertOrder() {return filtersInsertOrder; }
     ~FilterLoader(){}
   private:
     std::map<std::string, Filter> filters;
+    std::vector<std::string> filtersInsertOrder;
 };
 
 #endif
