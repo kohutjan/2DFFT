@@ -29,7 +29,11 @@ bool Run::Start(bool show)
         //Prepare spatial convolution
         Mat flipedFilter = this->filters[filterName].getValues().clone();
         flip(this->filters[filterName].getValues(), flipedFilter, -1);
-        spatialConvolution.setData(src, dst, flipedFilter);
+        Mat srcF;
+        Mat dstF;
+        src.convertTo(srcF, CV_32FC1);
+        dst.convertTo(dstF, CV_32FC1);
+        spatialConvolution.setData(srcF, dstF, flipedFilter);
 
         //Measure time
         chrono::duration<double, std::milli> duration = std::chrono::milliseconds::zero();
@@ -44,6 +48,7 @@ bool Run::Start(bool show)
 
         if (show)
         {
+          dstF.convertTo(dst, CV_8UC1);
           imshow(filterName + " spatial regular", dst);
         }
       }
