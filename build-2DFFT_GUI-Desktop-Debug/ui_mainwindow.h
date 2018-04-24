@@ -15,6 +15,7 @@
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QComboBox>
+#include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QGridLayout>
@@ -36,37 +37,42 @@ class Ui_MainWindow
 public:
     QWidget *centralWidget;
     QGridLayout *gridLayout;
-    QVBoxLayout *verticalLayout;
-    QPushButton *pushButton_3;
-    QFormLayout *formLayout_2;
-    QLabel *label_10;
-    QLabel *label_8;
-    QLabel *label_11;
-    QGraphicsView *graphicsView;
-    QFormLayout *formLayout;
-    QLabel *label_4;
-    QComboBox *comboBox;
-    QLabel *label_5;
-    QPushButton *pushButton_2;
-    QLabel *label_9;
-    QCheckBox *checkBox_2;
-    QCheckBox *checkBox_3;
-    QCheckBox *checkBox;
+    QVBoxLayout *run_layout;
+    QLabel *run_err_label;
+    QPushButton *run_button;
+    QGridLayout *result_layout;
+    QLabel *freq_time_label;
+    QLabel *regular_time_label;
+    QLabel *separ_time_label;
+    QLabel *regular_time_result_label;
+    QLabel *separ_time_result_label;
+    QLabel *freq_time_result_label;
+    QGraphicsView *picture_gview;
+    QFormLayout *menu_layout;
+    QLabel *create_filter_label;
+    QPushButton *create_filter_button;
+    QLabel *select_filter_label;
+    QComboBox *select_filter_combobox;
+    QLabel *convo_types_label;
+    QCheckBox *convo_type_regular_check;
+    QCheckBox *convo_type_separ_check;
+    QCheckBox *convo_type_freq_check;
     QSpacerItem *verticalSpacer;
-    QLabel *label;
-    QPushButton *pushButton;
+    QLabel *change_pic_label;
+    QPushButton *change_pic_button;
     QSpacerItem *verticalSpacer_3;
-    QLabel *label_12;
-    QPushButton *pushButton_4;
-    QLabel *label_13;
-    QPushButton *pushButton_6;
-    QLabel *label_14;
-    QPushButton *pushButton_7;
-    QLabel *label_15;
-    QPushButton *pushButton_5;
-    QLabel *label_7;
-    QSpinBox *spinBox;
+    QLabel *show_orig_label;
+    QPushButton *show_orig_button;
+    QLabel *show_regular_label;
+    QPushButton *show_regular_button;
+    QLabel *show_separ_label;
+    QPushButton *show_separ_button;
+    QLabel *show_freq_label;
+    QPushButton *show_freq_button;
     QSpacerItem *verticalSpacer_2;
+    QLabel *iters_label;
+    QSpinBox *iters_spinbox;
+    QDialogButtonBox *select_filter_dialog;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -81,163 +87,199 @@ public:
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        verticalLayout = new QVBoxLayout();
-        verticalLayout->setSpacing(6);
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
-        pushButton_3 = new QPushButton(centralWidget);
-        pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
+        run_layout = new QVBoxLayout();
+        run_layout->setSpacing(6);
+        run_layout->setObjectName(QStringLiteral("run_layout"));
+        run_err_label = new QLabel(centralWidget);
+        run_err_label->setObjectName(QStringLiteral("run_err_label"));
 
-        verticalLayout->addWidget(pushButton_3);
+        run_layout->addWidget(run_err_label);
 
+        run_button = new QPushButton(centralWidget);
+        run_button->setObjectName(QStringLiteral("run_button"));
 
-        gridLayout->addLayout(verticalLayout, 1, 1, 1, 1);
-
-        formLayout_2 = new QFormLayout();
-        formLayout_2->setSpacing(6);
-        formLayout_2->setObjectName(QStringLiteral("formLayout_2"));
-        label_10 = new QLabel(centralWidget);
-        label_10->setObjectName(QStringLiteral("label_10"));
-
-        formLayout_2->setWidget(0, QFormLayout::FieldRole, label_10);
-
-        label_8 = new QLabel(centralWidget);
-        label_8->setObjectName(QStringLiteral("label_8"));
-
-        formLayout_2->setWidget(1, QFormLayout::FieldRole, label_8);
-
-        label_11 = new QLabel(centralWidget);
-        label_11->setObjectName(QStringLiteral("label_11"));
-
-        formLayout_2->setWidget(2, QFormLayout::FieldRole, label_11);
+        run_layout->addWidget(run_button);
 
 
-        gridLayout->addLayout(formLayout_2, 1, 0, 1, 1);
+        gridLayout->addLayout(run_layout, 1, 1, 1, 1);
 
-        graphicsView = new QGraphicsView(centralWidget);
-        graphicsView->setObjectName(QStringLiteral("graphicsView"));
-        graphicsView->setMinimumSize(QSize(640, 480));
+        result_layout = new QGridLayout();
+        result_layout->setSpacing(6);
+        result_layout->setObjectName(QStringLiteral("result_layout"));
+        freq_time_label = new QLabel(centralWidget);
+        freq_time_label->setObjectName(QStringLiteral("freq_time_label"));
 
-        gridLayout->addWidget(graphicsView, 0, 0, 1, 1);
+        result_layout->addWidget(freq_time_label, 2, 0, 1, 1);
 
-        formLayout = new QFormLayout();
-        formLayout->setSpacing(6);
-        formLayout->setObjectName(QStringLiteral("formLayout"));
-        label_4 = new QLabel(centralWidget);
-        label_4->setObjectName(QStringLiteral("label_4"));
+        regular_time_label = new QLabel(centralWidget);
+        regular_time_label->setObjectName(QStringLiteral("regular_time_label"));
 
-        formLayout->setWidget(1, QFormLayout::LabelRole, label_4);
+        result_layout->addWidget(regular_time_label, 0, 0, 1, 1);
 
-        comboBox = new QComboBox(centralWidget);
-        comboBox->setObjectName(QStringLiteral("comboBox"));
+        separ_time_label = new QLabel(centralWidget);
+        separ_time_label->setObjectName(QStringLiteral("separ_time_label"));
 
-        formLayout->setWidget(1, QFormLayout::FieldRole, comboBox);
+        result_layout->addWidget(separ_time_label, 1, 0, 1, 1);
 
-        label_5 = new QLabel(centralWidget);
-        label_5->setObjectName(QStringLiteral("label_5"));
+        regular_time_result_label = new QLabel(centralWidget);
+        regular_time_result_label->setObjectName(QStringLiteral("regular_time_result_label"));
+        regular_time_result_label->setMinimumSize(QSize(500, 0));
 
-        formLayout->setWidget(2, QFormLayout::LabelRole, label_5);
+        result_layout->addWidget(regular_time_result_label, 0, 1, 1, 1);
 
-        pushButton_2 = new QPushButton(centralWidget);
-        pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
+        separ_time_result_label = new QLabel(centralWidget);
+        separ_time_result_label->setObjectName(QStringLiteral("separ_time_result_label"));
+        separ_time_result_label->setMinimumSize(QSize(500, 0));
 
-        formLayout->setWidget(2, QFormLayout::FieldRole, pushButton_2);
+        result_layout->addWidget(separ_time_result_label, 1, 1, 1, 1);
 
-        label_9 = new QLabel(centralWidget);
-        label_9->setObjectName(QStringLiteral("label_9"));
+        freq_time_result_label = new QLabel(centralWidget);
+        freq_time_result_label->setObjectName(QStringLiteral("freq_time_result_label"));
+        freq_time_result_label->setMinimumSize(QSize(500, 0));
 
-        formLayout->setWidget(3, QFormLayout::LabelRole, label_9);
+        result_layout->addWidget(freq_time_result_label, 2, 1, 1, 1);
 
-        checkBox_2 = new QCheckBox(centralWidget);
-        checkBox_2->setObjectName(QStringLiteral("checkBox_2"));
 
-        formLayout->setWidget(3, QFormLayout::FieldRole, checkBox_2);
+        gridLayout->addLayout(result_layout, 1, 0, 1, 1);
 
-        checkBox_3 = new QCheckBox(centralWidget);
-        checkBox_3->setObjectName(QStringLiteral("checkBox_3"));
+        picture_gview = new QGraphicsView(centralWidget);
+        picture_gview->setObjectName(QStringLiteral("picture_gview"));
+        picture_gview->setMinimumSize(QSize(640, 480));
 
-        formLayout->setWidget(4, QFormLayout::FieldRole, checkBox_3);
+        gridLayout->addWidget(picture_gview, 0, 0, 1, 1);
 
-        checkBox = new QCheckBox(centralWidget);
-        checkBox->setObjectName(QStringLiteral("checkBox"));
+        menu_layout = new QFormLayout();
+        menu_layout->setSpacing(6);
+        menu_layout->setObjectName(QStringLiteral("menu_layout"));
+        create_filter_label = new QLabel(centralWidget);
+        create_filter_label->setObjectName(QStringLiteral("create_filter_label"));
 
-        formLayout->setWidget(5, QFormLayout::FieldRole, checkBox);
+        menu_layout->setWidget(1, QFormLayout::LabelRole, create_filter_label);
+
+        create_filter_button = new QPushButton(centralWidget);
+        create_filter_button->setObjectName(QStringLiteral("create_filter_button"));
+
+        menu_layout->setWidget(1, QFormLayout::FieldRole, create_filter_button);
+
+        select_filter_label = new QLabel(centralWidget);
+        select_filter_label->setObjectName(QStringLiteral("select_filter_label"));
+
+        menu_layout->setWidget(2, QFormLayout::LabelRole, select_filter_label);
+
+        select_filter_combobox = new QComboBox(centralWidget);
+        select_filter_combobox->setObjectName(QStringLiteral("select_filter_combobox"));
+
+        menu_layout->setWidget(2, QFormLayout::FieldRole, select_filter_combobox);
+
+        convo_types_label = new QLabel(centralWidget);
+        convo_types_label->setObjectName(QStringLiteral("convo_types_label"));
+
+        menu_layout->setWidget(4, QFormLayout::LabelRole, convo_types_label);
+
+        convo_type_regular_check = new QCheckBox(centralWidget);
+        convo_type_regular_check->setObjectName(QStringLiteral("convo_type_regular_check"));
+
+        menu_layout->setWidget(4, QFormLayout::FieldRole, convo_type_regular_check);
+
+        convo_type_separ_check = new QCheckBox(centralWidget);
+        convo_type_separ_check->setObjectName(QStringLiteral("convo_type_separ_check"));
+
+        menu_layout->setWidget(5, QFormLayout::FieldRole, convo_type_separ_check);
+
+        convo_type_freq_check = new QCheckBox(centralWidget);
+        convo_type_freq_check->setObjectName(QStringLiteral("convo_type_freq_check"));
+
+        menu_layout->setWidget(6, QFormLayout::FieldRole, convo_type_freq_check);
 
         verticalSpacer = new QSpacerItem(20, 60, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
-        formLayout->setItem(6, QFormLayout::SpanningRole, verticalSpacer);
+        menu_layout->setItem(7, QFormLayout::SpanningRole, verticalSpacer);
 
-        label = new QLabel(centralWidget);
-        label->setObjectName(QStringLiteral("label"));
+        change_pic_label = new QLabel(centralWidget);
+        change_pic_label->setObjectName(QStringLiteral("change_pic_label"));
 
-        formLayout->setWidget(7, QFormLayout::LabelRole, label);
+        menu_layout->setWidget(8, QFormLayout::LabelRole, change_pic_label);
 
-        pushButton = new QPushButton(centralWidget);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
+        change_pic_button = new QPushButton(centralWidget);
+        change_pic_button->setObjectName(QStringLiteral("change_pic_button"));
 
-        formLayout->setWidget(7, QFormLayout::FieldRole, pushButton);
+        menu_layout->setWidget(8, QFormLayout::FieldRole, change_pic_button);
 
         verticalSpacer_3 = new QSpacerItem(20, 25, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
-        formLayout->setItem(8, QFormLayout::SpanningRole, verticalSpacer_3);
+        menu_layout->setItem(9, QFormLayout::SpanningRole, verticalSpacer_3);
 
-        label_12 = new QLabel(centralWidget);
-        label_12->setObjectName(QStringLiteral("label_12"));
+        show_orig_label = new QLabel(centralWidget);
+        show_orig_label->setObjectName(QStringLiteral("show_orig_label"));
 
-        formLayout->setWidget(9, QFormLayout::LabelRole, label_12);
+        menu_layout->setWidget(10, QFormLayout::LabelRole, show_orig_label);
 
-        pushButton_4 = new QPushButton(centralWidget);
-        pushButton_4->setObjectName(QStringLiteral("pushButton_4"));
+        show_orig_button = new QPushButton(centralWidget);
+        show_orig_button->setObjectName(QStringLiteral("show_orig_button"));
 
-        formLayout->setWidget(9, QFormLayout::FieldRole, pushButton_4);
+        menu_layout->setWidget(10, QFormLayout::FieldRole, show_orig_button);
 
-        label_13 = new QLabel(centralWidget);
-        label_13->setObjectName(QStringLiteral("label_13"));
+        show_regular_label = new QLabel(centralWidget);
+        show_regular_label->setObjectName(QStringLiteral("show_regular_label"));
 
-        formLayout->setWidget(10, QFormLayout::LabelRole, label_13);
+        menu_layout->setWidget(11, QFormLayout::LabelRole, show_regular_label);
 
-        pushButton_6 = new QPushButton(centralWidget);
-        pushButton_6->setObjectName(QStringLiteral("pushButton_6"));
+        show_regular_button = new QPushButton(centralWidget);
+        show_regular_button->setObjectName(QStringLiteral("show_regular_button"));
 
-        formLayout->setWidget(10, QFormLayout::FieldRole, pushButton_6);
+        menu_layout->setWidget(11, QFormLayout::FieldRole, show_regular_button);
 
-        label_14 = new QLabel(centralWidget);
-        label_14->setObjectName(QStringLiteral("label_14"));
+        show_separ_label = new QLabel(centralWidget);
+        show_separ_label->setObjectName(QStringLiteral("show_separ_label"));
 
-        formLayout->setWidget(11, QFormLayout::LabelRole, label_14);
+        menu_layout->setWidget(12, QFormLayout::LabelRole, show_separ_label);
 
-        pushButton_7 = new QPushButton(centralWidget);
-        pushButton_7->setObjectName(QStringLiteral("pushButton_7"));
+        show_separ_button = new QPushButton(centralWidget);
+        show_separ_button->setObjectName(QStringLiteral("show_separ_button"));
 
-        formLayout->setWidget(11, QFormLayout::FieldRole, pushButton_7);
+        menu_layout->setWidget(12, QFormLayout::FieldRole, show_separ_button);
 
-        label_15 = new QLabel(centralWidget);
-        label_15->setObjectName(QStringLiteral("label_15"));
+        show_freq_label = new QLabel(centralWidget);
+        show_freq_label->setObjectName(QStringLiteral("show_freq_label"));
 
-        formLayout->setWidget(12, QFormLayout::LabelRole, label_15);
+        menu_layout->setWidget(13, QFormLayout::LabelRole, show_freq_label);
 
-        pushButton_5 = new QPushButton(centralWidget);
-        pushButton_5->setObjectName(QStringLiteral("pushButton_5"));
+        show_freq_button = new QPushButton(centralWidget);
+        show_freq_button->setObjectName(QStringLiteral("show_freq_button"));
 
-        formLayout->setWidget(12, QFormLayout::FieldRole, pushButton_5);
-
-        label_7 = new QLabel(centralWidget);
-        label_7->setObjectName(QStringLiteral("label_7"));
-
-        formLayout->setWidget(14, QFormLayout::LabelRole, label_7);
-
-        spinBox = new QSpinBox(centralWidget);
-        spinBox->setObjectName(QStringLiteral("spinBox"));
-        spinBox->setMinimum(1);
-        spinBox->setMaximum(99999);
-
-        formLayout->setWidget(14, QFormLayout::FieldRole, spinBox);
+        menu_layout->setWidget(13, QFormLayout::FieldRole, show_freq_button);
 
         verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
-        formLayout->setItem(13, QFormLayout::SpanningRole, verticalSpacer_2);
+        menu_layout->setItem(14, QFormLayout::SpanningRole, verticalSpacer_2);
+
+        iters_label = new QLabel(centralWidget);
+        iters_label->setObjectName(QStringLiteral("iters_label"));
+
+        menu_layout->setWidget(15, QFormLayout::LabelRole, iters_label);
+
+        iters_spinbox = new QSpinBox(centralWidget);
+        iters_spinbox->setObjectName(QStringLiteral("iters_spinbox"));
+        iters_spinbox->setMinimum(1);
+        iters_spinbox->setMaximum(99999);
+
+        menu_layout->setWidget(15, QFormLayout::FieldRole, iters_spinbox);
+
+        select_filter_dialog = new QDialogButtonBox(centralWidget);
+        select_filter_dialog->setObjectName(QStringLiteral("select_filter_dialog"));
+        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(select_filter_dialog->sizePolicy().hasHeightForWidth());
+        select_filter_dialog->setSizePolicy(sizePolicy);
+        select_filter_dialog->setLayoutDirection(Qt::LeftToRight);
+        select_filter_dialog->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
+        select_filter_dialog->setCenterButtons(false);
+
+        menu_layout->setWidget(3, QFormLayout::FieldRole, select_filter_dialog);
 
 
-        gridLayout->addLayout(formLayout, 0, 1, 1, 1);
+        gridLayout->addLayout(menu_layout, 0, 1, 1, 1);
 
         MainWindow->setCentralWidget(centralWidget);
         mainToolBar = new QToolBar(MainWindow);
@@ -255,28 +297,32 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "2D Filtering tool", 0));
-        pushButton_3->setText(QApplication::translate("MainWindow", "Run", 0));
-        label_10->setText(QApplication::translate("MainWindow", "Regular spatial time:", 0));
-        label_8->setText(QApplication::translate("MainWindow", "Separable spatial time:", 0));
-        label_11->setText(QApplication::translate("MainWindow", "Frequential time:", 0));
-        label_4->setText(QApplication::translate("MainWindow", "Choose a filter:", 0));
-        label_5->setText(QApplication::translate("MainWindow", "Add a custom filter:", 0));
-        pushButton_2->setText(QApplication::translate("MainWindow", "Create a filter", 0));
-        label_9->setText(QApplication::translate("MainWindow", "Choose convolution types:", 0));
-        checkBox_2->setText(QApplication::translate("MainWindow", "Regular spatial convolution", 0));
-        checkBox_3->setText(QApplication::translate("MainWindow", "Separable spatial convolution", 0));
-        checkBox->setText(QApplication::translate("MainWindow", "Frequential convolution", 0));
-        label->setText(QApplication::translate("MainWindow", "Change the picture:", 0));
-        pushButton->setText(QApplication::translate("MainWindow", "Select a file", 0));
-        label_12->setText(QApplication::translate("MainWindow", "Original:", 0));
-        pushButton_4->setText(QApplication::translate("MainWindow", "Show", 0));
-        label_13->setText(QApplication::translate("MainWindow", "Regular spatial:", 0));
-        pushButton_6->setText(QApplication::translate("MainWindow", "Show", 0));
-        label_14->setText(QApplication::translate("MainWindow", "Separable spatial:", 0));
-        pushButton_7->setText(QApplication::translate("MainWindow", "Show", 0));
-        label_15->setText(QApplication::translate("MainWindow", "Frequential:", 0));
-        pushButton_5->setText(QApplication::translate("MainWindow", "Show", 0));
-        label_7->setText(QApplication::translate("MainWindow", "Iterations:", 0));
+        run_err_label->setText(QString());
+        run_button->setText(QApplication::translate("MainWindow", "Run", 0));
+        freq_time_label->setText(QApplication::translate("MainWindow", "Frequential time:", 0));
+        regular_time_label->setText(QApplication::translate("MainWindow", "Regular spatial time:", 0));
+        separ_time_label->setText(QApplication::translate("MainWindow", "Separable spatial time:", 0));
+        regular_time_result_label->setText(QString());
+        separ_time_result_label->setText(QString());
+        freq_time_result_label->setText(QString());
+        create_filter_label->setText(QApplication::translate("MainWindow", "Add a custom filter:", 0));
+        create_filter_button->setText(QApplication::translate("MainWindow", "Create a filter", 0));
+        select_filter_label->setText(QApplication::translate("MainWindow", "Select a filter:", 0));
+        convo_types_label->setText(QApplication::translate("MainWindow", "Choose convolution types:", 0));
+        convo_type_regular_check->setText(QApplication::translate("MainWindow", "Regular spatial convolution", 0));
+        convo_type_separ_check->setText(QApplication::translate("MainWindow", "Separable spatial convolution", 0));
+        convo_type_freq_check->setText(QApplication::translate("MainWindow", "Frequential convolution", 0));
+        change_pic_label->setText(QApplication::translate("MainWindow", "Change the picture:", 0));
+        change_pic_button->setText(QApplication::translate("MainWindow", "Select a file", 0));
+        show_orig_label->setText(QApplication::translate("MainWindow", "Original:", 0));
+        show_orig_button->setText(QApplication::translate("MainWindow", "Show", 0));
+        show_regular_label->setText(QApplication::translate("MainWindow", "Regular spatial:", 0));
+        show_regular_button->setText(QApplication::translate("MainWindow", "Show", 0));
+        show_separ_label->setText(QApplication::translate("MainWindow", "Separable spatial:", 0));
+        show_separ_button->setText(QApplication::translate("MainWindow", "Show", 0));
+        show_freq_label->setText(QApplication::translate("MainWindow", "Frequential:", 0));
+        show_freq_button->setText(QApplication::translate("MainWindow", "Show", 0));
+        iters_label->setText(QApplication::translate("MainWindow", "Iterations:", 0));
     } // retranslateUi
 
 };

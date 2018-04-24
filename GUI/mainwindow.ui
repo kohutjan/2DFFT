@@ -16,9 +16,16 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="1" column="1">
-     <layout class="QVBoxLayout" name="verticalLayout">
+     <layout class="QVBoxLayout" name="run_layout">
       <item>
-       <widget class="QPushButton" name="pushButton_3">
+       <widget class="QLabel" name="run_err_label">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="run_button">
         <property name="text">
          <string>Run</string>
         </property>
@@ -27,32 +34,71 @@
      </layout>
     </item>
     <item row="1" column="0">
-     <layout class="QFormLayout" name="formLayout_2">
-      <item row="0" column="1">
-       <widget class="QLabel" name="label_10">
+     <layout class="QGridLayout" name="result_layout">
+      <item row="2" column="0">
+       <widget class="QLabel" name="freq_time_label">
+        <property name="text">
+         <string>Frequential time:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="regular_time_label">
         <property name="text">
          <string>Regular spatial time:</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QLabel" name="label_8">
+      <item row="1" column="0">
+       <widget class="QLabel" name="separ_time_label">
         <property name="text">
          <string>Separable spatial time:</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QLabel" name="label_11">
+      <item row="0" column="1">
+       <widget class="QLabel" name="regular_time_result_label">
+        <property name="minimumSize">
+         <size>
+          <width>500</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="text">
-         <string>Frequential time:</string>
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="separ_time_result_label">
+        <property name="minimumSize">
+         <size>
+          <width>500</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLabel" name="freq_time_result_label">
+        <property name="minimumSize">
+         <size>
+          <width>500</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
         </property>
        </widget>
       </item>
      </layout>
     </item>
     <item row="0" column="0">
-     <widget class="QGraphicsView" name="graphicsView">
+     <widget class="QGraphicsView" name="picture_gview">
       <property name="minimumSize">
        <size>
         <width>640</width>
@@ -62,60 +108,60 @@
      </widget>
     </item>
     <item row="0" column="1">
-     <layout class="QFormLayout" name="formLayout">
+     <layout class="QFormLayout" name="menu_layout">
       <item row="1" column="0">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>Choose a filter:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QComboBox" name="comboBox"/>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_5">
+       <widget class="QLabel" name="create_filter_label">
         <property name="text">
          <string>Add a custom filter:</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QPushButton" name="pushButton_2">
+      <item row="1" column="1">
+       <widget class="QPushButton" name="create_filter_button">
         <property name="text">
          <string>Create a filter</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_9">
+      <item row="2" column="0">
+       <widget class="QLabel" name="select_filter_label">
+        <property name="text">
+         <string>Select a filter:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="select_filter_combobox"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="convo_types_label">
         <property name="text">
          <string>Choose convolution types:</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QCheckBox" name="checkBox_2">
+      <item row="4" column="1">
+       <widget class="QCheckBox" name="convo_type_regular_check">
         <property name="text">
          <string>Regular spatial convolution</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <widget class="QCheckBox" name="checkBox_3">
+      <item row="5" column="1">
+       <widget class="QCheckBox" name="convo_type_separ_check">
         <property name="text">
          <string>Separable spatial convolution</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
-       <widget class="QCheckBox" name="checkBox">
+      <item row="6" column="1">
+       <widget class="QCheckBox" name="convo_type_freq_check">
         <property name="text">
          <string>Frequential convolution</string>
         </property>
        </widget>
       </item>
-      <item row="6" column="0" colspan="2">
+      <item row="7" column="0" colspan="2">
        <spacer name="verticalSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -128,21 +174,21 @@
         </property>
        </spacer>
       </item>
-      <item row="7" column="0">
-       <widget class="QLabel" name="label">
+      <item row="8" column="0">
+       <widget class="QLabel" name="change_pic_label">
         <property name="text">
          <string>Change the picture:</string>
         </property>
        </widget>
       </item>
-      <item row="7" column="1">
-       <widget class="QPushButton" name="pushButton">
+      <item row="8" column="1">
+       <widget class="QPushButton" name="change_pic_button">
         <property name="text">
          <string>Select a file</string>
         </property>
        </widget>
       </item>
-      <item row="8" column="0" colspan="2">
+      <item row="9" column="0" colspan="2">
        <spacer name="verticalSpacer_3">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -155,80 +201,63 @@
         </property>
        </spacer>
       </item>
-      <item row="9" column="0">
-       <widget class="QLabel" name="label_12">
+      <item row="10" column="0">
+       <widget class="QLabel" name="show_orig_label">
         <property name="text">
          <string>Original:</string>
         </property>
        </widget>
       </item>
-      <item row="9" column="1">
-       <widget class="QPushButton" name="pushButton_4">
-        <property name="text">
-         <string>Show</string>
-        </property>
-       </widget>
-      </item>
-      <item row="10" column="0">
-       <widget class="QLabel" name="label_13">
-        <property name="text">
-         <string>Regular spatial:</string>
-        </property>
-       </widget>
-      </item>
       <item row="10" column="1">
-       <widget class="QPushButton" name="pushButton_6">
+       <widget class="QPushButton" name="show_orig_button">
         <property name="text">
          <string>Show</string>
         </property>
        </widget>
       </item>
       <item row="11" column="0">
-       <widget class="QLabel" name="label_14">
+       <widget class="QLabel" name="show_regular_label">
         <property name="text">
-         <string>Separable spatial:</string>
+         <string>Regular spatial:</string>
         </property>
        </widget>
       </item>
       <item row="11" column="1">
-       <widget class="QPushButton" name="pushButton_7">
+       <widget class="QPushButton" name="show_regular_button">
         <property name="text">
          <string>Show</string>
         </property>
        </widget>
       </item>
       <item row="12" column="0">
-       <widget class="QLabel" name="label_15">
+       <widget class="QLabel" name="show_separ_label">
         <property name="text">
-         <string>Frequential:</string>
+         <string>Separable spatial:</string>
         </property>
        </widget>
       </item>
       <item row="12" column="1">
-       <widget class="QPushButton" name="pushButton_5">
+       <widget class="QPushButton" name="show_separ_button">
         <property name="text">
          <string>Show</string>
         </property>
        </widget>
       </item>
-      <item row="14" column="0">
-       <widget class="QLabel" name="label_7">
+      <item row="13" column="0">
+       <widget class="QLabel" name="show_freq_label">
         <property name="text">
-         <string>Iterations:</string>
+         <string>Frequential:</string>
         </property>
        </widget>
       </item>
-      <item row="14" column="1">
-       <widget class="QSpinBox" name="spinBox">
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>99999</number>
+      <item row="13" column="1">
+       <widget class="QPushButton" name="show_freq_button">
+        <property name="text">
+         <string>Show</string>
         </property>
        </widget>
       </item>
-      <item row="13" column="0" colspan="2">
+      <item row="14" column="0" colspan="2">
        <spacer name="verticalSpacer_2">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -240,6 +269,42 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item row="15" column="0">
+       <widget class="QLabel" name="iters_label">
+        <property name="text">
+         <string>Iterations:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="15" column="1">
+       <widget class="QSpinBox" name="iters_spinbox">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>99999</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QDialogButtonBox" name="select_filter_dialog">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="standardButtons">
+         <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+        </property>
+        <property name="centerButtons">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
