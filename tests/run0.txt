@@ -4,3 +4,4 @@ images 2
 iterations 500
 spatial
 separable
+frequency

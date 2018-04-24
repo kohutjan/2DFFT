@@ -82,9 +82,19 @@ bool Run::Start(bool show)
 
       if (this->frequency)
       {
-        frequencyConvolution.FFT();
-        frequencyConvolution.MUL();
-        frequencyConvolution.IFFT();
+
+        chrono::duration<double, std::milli> duration = std::chrono::milliseconds::zero();
+        for (int i = 0; i < this->iterations; ++i)
+        {
+          auto beginSeparable = chrono::high_resolution_clock::now();
+          frequencyConvolution.FFT();
+          frequencyConvolution.MUL();
+          frequencyConvolution.IFFT();
+          auto endSeparable = chrono::high_resolution_clock::now();
+          duration += endSeparable - beginSeparable;
+        }
+
+        this->statistics[filterName].frequentialDurations[imagePath] = duration;
 
         if (show)
         {
@@ -169,7 +179,8 @@ void Run::PrintToStream(ostream &statisticsStream)
       }
       if (this->frequency)
       {
-
+        double meanDuration = this->statistics[filterName].frequentialDurations[imagePath].count() / this->iterations;
+        statisticsStream <<  meanDuration << " ";
       }
       statisticsStream << endl;
     }
