@@ -11,6 +11,12 @@ class FrequencyConvolution : public Convolution
     void MUL();
     void IFFT();
     ~FrequencyConvolution(){}
+
+  private:
+    cv::Mat srcPadded;
+    cv::Mat filterPadded;
+    cv::Mat spectrumImgCCS;
+    cv::Mat spectrumFilterCCS;
 };
 
 #endif

@@ -275,9 +275,9 @@ bool Run::isSeparable(Mat kernel, Mat &kernelX, Mat &kernelY)
   */
   SVD::compute(kernel, sigma, u, vt);
   for (auto it = sigma.begin<float>(); it != sigma.end<float>(); it++) {
-    if (*it > 0.00001)
+    if (*it > 0.00001) //threshold for calculation errors, sigma values are never negative
     {
-       rank++; //threshold for calculation errors, sigma values are never negative
+       rank++;
     }
   }
 
