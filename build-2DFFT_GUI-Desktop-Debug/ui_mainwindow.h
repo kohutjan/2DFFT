@@ -22,9 +22,11 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -34,9 +36,7 @@ class Ui_MainWindow
 public:
     QWidget *centralWidget;
     QGridLayout *gridLayout;
-    QGridLayout *gridLayout_2;
-    QSpinBox *spinBox;
-    QLabel *label_7;
+    QVBoxLayout *verticalLayout;
     QPushButton *pushButton_3;
     QFormLayout *formLayout_2;
     QLabel *label_10;
@@ -52,12 +52,10 @@ public:
     QCheckBox *checkBox_2;
     QCheckBox *checkBox_3;
     QCheckBox *checkBox;
-    QLabel *label_2;
-    QLabel *label_6;
-    QLabel *label_16;
-    QLabel *label_17;
+    QSpacerItem *verticalSpacer;
     QLabel *label;
     QPushButton *pushButton;
+    QSpacerItem *verticalSpacer_3;
     QLabel *label_12;
     QPushButton *pushButton_4;
     QLabel *label_13;
@@ -66,7 +64,9 @@ public:
     QPushButton *pushButton_7;
     QLabel *label_15;
     QPushButton *pushButton_5;
-    QLabel *label_19;
+    QLabel *label_7;
+    QSpinBox *spinBox;
+    QSpacerItem *verticalSpacer_2;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -74,35 +74,23 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(1081, 627);
+        MainWindow->resize(1081, 604);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         gridLayout = new QGridLayout(centralWidget);
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        gridLayout_2 = new QGridLayout();
-        gridLayout_2->setSpacing(6);
-        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
-        spinBox = new QSpinBox(centralWidget);
-        spinBox->setObjectName(QStringLiteral("spinBox"));
-        spinBox->setMinimum(1);
-        spinBox->setMaximum(99999);
-
-        gridLayout_2->addWidget(spinBox, 0, 1, 1, 1);
-
-        label_7 = new QLabel(centralWidget);
-        label_7->setObjectName(QStringLiteral("label_7"));
-
-        gridLayout_2->addWidget(label_7, 0, 0, 1, 1);
-
+        verticalLayout = new QVBoxLayout();
+        verticalLayout->setSpacing(6);
+        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
         pushButton_3 = new QPushButton(centralWidget);
         pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
 
-        gridLayout_2->addWidget(pushButton_3, 1, 1, 1, 1);
+        verticalLayout->addWidget(pushButton_3);
 
 
-        gridLayout->addLayout(gridLayout_2, 1, 1, 1, 1);
+        gridLayout->addLayout(verticalLayout, 1, 1, 1, 1);
 
         formLayout_2 = new QFormLayout();
         formLayout_2->setSpacing(6);
@@ -174,80 +162,79 @@ public:
 
         formLayout->setWidget(5, QFormLayout::FieldRole, checkBox);
 
-        label_2 = new QLabel(centralWidget);
-        label_2->setObjectName(QStringLiteral("label_2"));
+        verticalSpacer = new QSpacerItem(20, 60, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
-        formLayout->setWidget(6, QFormLayout::FieldRole, label_2);
-
-        label_6 = new QLabel(centralWidget);
-        label_6->setObjectName(QStringLiteral("label_6"));
-
-        formLayout->setWidget(7, QFormLayout::FieldRole, label_6);
-
-        label_16 = new QLabel(centralWidget);
-        label_16->setObjectName(QStringLiteral("label_16"));
-
-        formLayout->setWidget(8, QFormLayout::FieldRole, label_16);
-
-        label_17 = new QLabel(centralWidget);
-        label_17->setObjectName(QStringLiteral("label_17"));
-
-        formLayout->setWidget(9, QFormLayout::FieldRole, label_17);
+        formLayout->setItem(6, QFormLayout::SpanningRole, verticalSpacer);
 
         label = new QLabel(centralWidget);
         label->setObjectName(QStringLiteral("label"));
 
-        formLayout->setWidget(10, QFormLayout::LabelRole, label);
+        formLayout->setWidget(7, QFormLayout::LabelRole, label);
 
         pushButton = new QPushButton(centralWidget);
         pushButton->setObjectName(QStringLiteral("pushButton"));
 
-        formLayout->setWidget(10, QFormLayout::FieldRole, pushButton);
+        formLayout->setWidget(7, QFormLayout::FieldRole, pushButton);
+
+        verticalSpacer_3 = new QSpacerItem(20, 25, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        formLayout->setItem(8, QFormLayout::SpanningRole, verticalSpacer_3);
 
         label_12 = new QLabel(centralWidget);
         label_12->setObjectName(QStringLiteral("label_12"));
 
-        formLayout->setWidget(12, QFormLayout::LabelRole, label_12);
+        formLayout->setWidget(9, QFormLayout::LabelRole, label_12);
 
         pushButton_4 = new QPushButton(centralWidget);
         pushButton_4->setObjectName(QStringLiteral("pushButton_4"));
 
-        formLayout->setWidget(12, QFormLayout::FieldRole, pushButton_4);
+        formLayout->setWidget(9, QFormLayout::FieldRole, pushButton_4);
 
         label_13 = new QLabel(centralWidget);
         label_13->setObjectName(QStringLiteral("label_13"));
 
-        formLayout->setWidget(13, QFormLayout::LabelRole, label_13);
+        formLayout->setWidget(10, QFormLayout::LabelRole, label_13);
 
         pushButton_6 = new QPushButton(centralWidget);
         pushButton_6->setObjectName(QStringLiteral("pushButton_6"));
 
-        formLayout->setWidget(13, QFormLayout::FieldRole, pushButton_6);
+        formLayout->setWidget(10, QFormLayout::FieldRole, pushButton_6);
 
         label_14 = new QLabel(centralWidget);
         label_14->setObjectName(QStringLiteral("label_14"));
 
-        formLayout->setWidget(14, QFormLayout::LabelRole, label_14);
+        formLayout->setWidget(11, QFormLayout::LabelRole, label_14);
 
         pushButton_7 = new QPushButton(centralWidget);
         pushButton_7->setObjectName(QStringLiteral("pushButton_7"));
 
-        formLayout->setWidget(14, QFormLayout::FieldRole, pushButton_7);
+        formLayout->setWidget(11, QFormLayout::FieldRole, pushButton_7);
 
         label_15 = new QLabel(centralWidget);
         label_15->setObjectName(QStringLiteral("label_15"));
 
-        formLayout->setWidget(15, QFormLayout::LabelRole, label_15);
+        formLayout->setWidget(12, QFormLayout::LabelRole, label_15);
 
         pushButton_5 = new QPushButton(centralWidget);
         pushButton_5->setObjectName(QStringLiteral("pushButton_5"));
 
-        formLayout->setWidget(15, QFormLayout::FieldRole, pushButton_5);
+        formLayout->setWidget(12, QFormLayout::FieldRole, pushButton_5);
 
-        label_19 = new QLabel(centralWidget);
-        label_19->setObjectName(QStringLiteral("label_19"));
+        label_7 = new QLabel(centralWidget);
+        label_7->setObjectName(QStringLiteral("label_7"));
 
-        formLayout->setWidget(11, QFormLayout::FieldRole, label_19);
+        formLayout->setWidget(14, QFormLayout::LabelRole, label_7);
+
+        spinBox = new QSpinBox(centralWidget);
+        spinBox->setObjectName(QStringLiteral("spinBox"));
+        spinBox->setMinimum(1);
+        spinBox->setMaximum(99999);
+
+        formLayout->setWidget(14, QFormLayout::FieldRole, spinBox);
+
+        verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        formLayout->setItem(13, QFormLayout::SpanningRole, verticalSpacer_2);
 
 
         gridLayout->addLayout(formLayout, 0, 1, 1, 1);
@@ -268,7 +255,6 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "2D Filtering tool", 0));
-        label_7->setText(QApplication::translate("MainWindow", "Iterations:", 0));
         pushButton_3->setText(QApplication::translate("MainWindow", "Run", 0));
         label_10->setText(QApplication::translate("MainWindow", "Regular spatial time:", 0));
         label_8->setText(QApplication::translate("MainWindow", "Separable spatial time:", 0));
@@ -280,10 +266,6 @@ public:
         checkBox_2->setText(QApplication::translate("MainWindow", "Regular spatial convolution", 0));
         checkBox_3->setText(QApplication::translate("MainWindow", "Separable spatial convolution", 0));
         checkBox->setText(QApplication::translate("MainWindow", "Frequential convolution", 0));
-        label_2->setText(QString());
-        label_6->setText(QString());
-        label_16->setText(QString());
-        label_17->setText(QString());
         label->setText(QApplication::translate("MainWindow", "Change the picture:", 0));
         pushButton->setText(QApplication::translate("MainWindow", "Select a file", 0));
         label_12->setText(QApplication::translate("MainWindow", "Original:", 0));
@@ -294,7 +276,7 @@ public:
         pushButton_7->setText(QApplication::translate("MainWindow", "Show", 0));
         label_15->setText(QApplication::translate("MainWindow", "Frequential:", 0));
         pushButton_5->setText(QApplication::translate("MainWindow", "Show", 0));
-        label_19->setText(QString());
+        label_7->setText(QApplication::translate("MainWindow", "Iterations:", 0));
     } // retranslateUi
 
 };

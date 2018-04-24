@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1081</width>
-    <height>627</height>
+    <height>604</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,25 +16,8 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="1" column="1">
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="1">
-       <widget class="QSpinBox" name="spinBox">
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>99999</number>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_7">
-        <property name="text">
-         <string>Iterations:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
        <widget class="QPushButton" name="pushButton_3">
         <property name="text">
          <string>Run</string>
@@ -132,110 +115,131 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="1">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string/>
+      <item row="6" column="0" colspan="2">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
         </property>
-       </widget>
-      </item>
-      <item row="7" column="1">
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string/>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>60</height>
+         </size>
         </property>
-       </widget>
+       </spacer>
       </item>
-      <item row="8" column="1">
-       <widget class="QLabel" name="label_16">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="1">
-       <widget class="QLabel" name="label_17">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="10" column="0">
+      <item row="7" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
          <string>Change the picture:</string>
         </property>
        </widget>
       </item>
-      <item row="10" column="1">
+      <item row="7" column="1">
        <widget class="QPushButton" name="pushButton">
         <property name="text">
          <string>Select a file</string>
         </property>
        </widget>
       </item>
-      <item row="12" column="0">
+      <item row="8" column="0" colspan="2">
+       <spacer name="verticalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>25</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="9" column="0">
        <widget class="QLabel" name="label_12">
         <property name="text">
          <string>Original:</string>
         </property>
        </widget>
       </item>
-      <item row="12" column="1">
+      <item row="9" column="1">
        <widget class="QPushButton" name="pushButton_4">
         <property name="text">
          <string>Show</string>
         </property>
        </widget>
       </item>
-      <item row="13" column="0">
+      <item row="10" column="0">
        <widget class="QLabel" name="label_13">
         <property name="text">
          <string>Regular spatial:</string>
         </property>
        </widget>
       </item>
-      <item row="13" column="1">
+      <item row="10" column="1">
        <widget class="QPushButton" name="pushButton_6">
         <property name="text">
          <string>Show</string>
         </property>
        </widget>
       </item>
-      <item row="14" column="0">
+      <item row="11" column="0">
        <widget class="QLabel" name="label_14">
         <property name="text">
          <string>Separable spatial:</string>
         </property>
        </widget>
       </item>
-      <item row="14" column="1">
+      <item row="11" column="1">
        <widget class="QPushButton" name="pushButton_7">
         <property name="text">
          <string>Show</string>
         </property>
        </widget>
       </item>
-      <item row="15" column="0">
+      <item row="12" column="0">
        <widget class="QLabel" name="label_15">
         <property name="text">
          <string>Frequential:</string>
         </property>
        </widget>
       </item>
-      <item row="15" column="1">
+      <item row="12" column="1">
        <widget class="QPushButton" name="pushButton_5">
         <property name="text">
          <string>Show</string>
         </property>
        </widget>
       </item>
-      <item row="11" column="1">
-       <widget class="QLabel" name="label_19">
+      <item row="14" column="0">
+       <widget class="QLabel" name="label_7">
         <property name="text">
-         <string/>
+         <string>Iterations:</string>
         </property>
        </widget>
+      </item>
+      <item row="14" column="1">
+       <widget class="QSpinBox" name="spinBox">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>99999</number>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="0" colspan="2">
+       <spacer name="verticalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </item>
