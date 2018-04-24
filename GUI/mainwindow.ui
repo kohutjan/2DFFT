@@ -15,95 +15,54 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="1">
-     <layout class="QFormLayout" name="formLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Change the picture:</string>
-        </property>
-       </widget>
-      </item>
+    <item row="1" column="1">
+     <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="1">
-       <widget class="QPushButton" name="pushButton">
-        <property name="text">
-         <string>Select a file</string>
+       <widget class="QSpinBox" name="spinBox">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>99999</number>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_7">
         <property name="text">
-         <string>Current picture:</string>
+         <string>Iterations:</string>
         </property>
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QLabel" name="label_3">
+       <widget class="QPushButton" name="pushButton_3">
         <property name="text">
-         <string/>
+         <string>Run</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_4">
+     </layout>
+    </item>
+    <item row="1" column="0">
+     <layout class="QFormLayout" name="formLayout_2">
+      <item row="0" column="1">
+       <widget class="QLabel" name="label_10">
         <property name="text">
-         <string>Choose filters:</string>
+         <string>Regular spatial time:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Separable spatial time:</string>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QListWidget" name="listWidget"/>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_5">
+       <widget class="QLabel" name="label_11">
         <property name="text">
-         <string>Add a custom filter:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QPushButton" name="pushButton_2">
-        <property name="text">
-         <string>Create a filter</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_9">
-        <property name="text">
-         <string>Choose convolution types:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QCheckBox" name="checkBox_2">
-        <property name="text">
-         <string>Regular spatial convolution</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QCheckBox" name="checkBox_3">
-        <property name="text">
-         <string>Separable spatial convolution</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="QCheckBox" name="checkBox">
-        <property name="text">
-         <string>Frequential convolution</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="1">
-       <widget class="QSpinBox" name="spinBox"/>
-      </item>
-      <item row="7" column="0">
-       <widget class="QLabel" name="label_7">
-        <property name="text">
-         <string>Iterations:</string>
+         <string>Frequential time:</string>
         </property>
        </widget>
       </item>
@@ -119,44 +78,162 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="1">
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QPushButton" name="pushButton_3">
+    <item row="0" column="1">
+     <layout class="QFormLayout" name="formLayout">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Run</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="1" column="0">
-     <layout class="QFormLayout" name="formLayout_2">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>Results:</string>
+         <string>Choose a filter:</string>
         </property>
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QLabel" name="label_10">
+       <widget class="QComboBox" name="comboBox"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>Regular spatial time:</string>
+         <string>Add a custom filter:</string>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QLabel" name="label_8">
+       <widget class="QPushButton" name="pushButton_2">
         <property name="text">
-         <string>Separable spatial time:</string>
+         <string>Create a filter</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Choose convolution types:</string>
         </property>
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QLabel" name="label_11">
+       <widget class="QCheckBox" name="checkBox_2">
         <property name="text">
-         <string>Frequential time:</string>
+         <string>Regular spatial convolution</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QCheckBox" name="checkBox_3">
+        <property name="text">
+         <string>Separable spatial convolution</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QCheckBox" name="checkBox">
+        <property name="text">
+         <string>Frequential convolution</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QLabel" name="label_16">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="1">
+       <widget class="QLabel" name="label_17">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Change the picture:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="1">
+       <widget class="QPushButton" name="pushButton">
+        <property name="text">
+         <string>Select a file</string>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="0">
+       <widget class="QLabel" name="label_12">
+        <property name="text">
+         <string>Original:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="1">
+       <widget class="QPushButton" name="pushButton_4">
+        <property name="text">
+         <string>Show</string>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="0">
+       <widget class="QLabel" name="label_13">
+        <property name="text">
+         <string>Regular spatial:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="1">
+       <widget class="QPushButton" name="pushButton_6">
+        <property name="text">
+         <string>Show</string>
+        </property>
+       </widget>
+      </item>
+      <item row="14" column="0">
+       <widget class="QLabel" name="label_14">
+        <property name="text">
+         <string>Separable spatial:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="14" column="1">
+       <widget class="QPushButton" name="pushButton_7">
+        <property name="text">
+         <string>Show</string>
+        </property>
+       </widget>
+      </item>
+      <item row="15" column="0">
+       <widget class="QLabel" name="label_15">
+        <property name="text">
+         <string>Frequential:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="15" column="1">
+       <widget class="QPushButton" name="pushButton_5">
+        <property name="text">
+         <string>Show</string>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="1">
+       <widget class="QLabel" name="label_19">
+        <property name="text">
+         <string/>
         </property>
        </widget>
       </item>
