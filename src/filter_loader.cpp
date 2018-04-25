@@ -4,6 +4,17 @@
 using namespace std;
 using namespace cv;
 
+Mat FilterLoader::GetMean(int kernelSize)
+{
+    return this->LoadMean(kernelSize);
+}
+
+Mat FilterLoader::GetGauss(int kernelSize, float sigma)
+{
+    Mat values = getGaussianKernel(kernelSize, sigma, CV_32F);
+    return values;
+}
+
 bool FilterLoader::Load(string filtersFilePath)
 {
   cout << "Filters file path: " << filtersFilePath << endl;
