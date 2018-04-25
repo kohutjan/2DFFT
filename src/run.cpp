@@ -79,10 +79,8 @@ bool Run::Start(bool show)
           }
         }
       }
-
       if (this->frequency)
       {
-
         chrono::duration<double, std::milli> duration = std::chrono::milliseconds::zero();
         for (int i = 0; i < this->iterations; ++i)
         {

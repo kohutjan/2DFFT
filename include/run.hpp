@@ -27,6 +27,7 @@ class Run
                     { filters = _filters; filtersInsertOrder = _filtersInsertOrder; }
     void InitFilterStatistics();
     bool Start(bool show);
+    std::map<std::string, FilterStatistic> statistics;
     ~Run(){}
   private:
     std::vector<std::string> imagePaths;
@@ -36,7 +37,6 @@ class Run
     bool frequency;
     std::map<std::string, Filter> filters;
     std::vector<std::string> filtersInsertOrder;
-    std::map<std::string, FilterStatistic> statistics;
     bool isSeparable(cv::Mat kernel, cv::Mat &kernelX, cv::Mat &kernelY);
 };
 
