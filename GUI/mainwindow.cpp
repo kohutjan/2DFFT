@@ -12,11 +12,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     this->playFilters["Mean"] = this->filterLoader.GetMean("Mean", "mean", 5);
     this->playFilters["Gaussian"] = this->filterLoader.GetGauss("Gaussian", "gauss", 5, 0.1);
-    QObject::connect(ui->filter_cbox, static_cast<void (QComboBox::*)(const QString &)> (&QComboBox::currentIndexChanged),
-                     this, &MainWindow::comboBoxFilterSelection);
-    QObject::connect(ui->min_kernel_size_sbox, &QAbstractSpinBox::editingFinished, this, &MainWindow::spinBoxFilterParamsSelection);
-    QObject::connect(ui->max_kernel_size_sbox, &QAbstractSpinBox::editingFinished, this, &MainWindow::spinBoxFilterParamsSelection);
-    QObject::connect(ui->step_size_sbox, &QAbstractSpinBox::editingFinished, this, &MainWindow::spinBoxFilterParamsSelection);
+    QObject::connect(ui->ana_filter_cbox, static_cast<void (QComboBox::*)(const QString &)> (&QComboBox::currentIndexChanged),
+                     this, &MainWindow::comboBoxAnaFilterSelection);
+    QObject::connect(ui->ana_min_kernel_size_sbox, &QAbstractSpinBox::editingFinished, this, &MainWindow::spinBoxAnaFilterParamsSelection);
+    QObject::connect(ui->ana_max_kernel_size_sbox, &QAbstractSpinBox::editingFinished, this, &MainWindow::spinBoxAnaFilterParamsSelection);
+    QObject::connect(ui->ana_step_size_sbox, &QAbstractSpinBox::editingFinished, this, &MainWindow::spinBoxAnaFilterParamsSelection);
 }
 
 MainWindow::~MainWindow()
@@ -40,25 +40,67 @@ void MainWindow::on_playLoadImg_clicked()
       ui->playInputImg->setPixmap(pixmap.scaled(scaleW, scaleH, Qt::KeepAspectRatio));
 }
 
-void MainWindow::on_change_pic_button_clicked()
+void MainWindow::on_ana_path_button_clicked()
 {
     QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
                                                  "/home",
                                                  QFileDialog::ShowDirsOnly
                                                  | QFileDialog::DontResolveSymlinks);
     if (dir.length() > 0)
-        ui->change_pic_label->setText(dir);
+    {
+        ui->ana_path_label->setText(dir);
+        // set Run::dir_selected = true;
+    }
 }
 
-void MainWindow::comboBoxFilterSelection(const QString & selection_text)
+void MainWindow::on_ana_static_sig_rad_clicked()
+{
+    ui->ana_sigma_sbox->setEnabled(true);
+}
+
+void MainWindow::on_ana_dynamic_sig_rad_clicked()
+{
+    ui->ana_sigma_sbox->setEnabled(false);
+}
+
+void MainWindow::on_ana_run_button_clicked()
+{
+    // zkontrolovat, jestli byla zvolena cesta
+    // zkontrolovat, jestli byl zvoleny filtr
+    // zkontrolovat, jestli byl zvoleny aspon jeden druh konvoluce
+
+    // QDirIteratorem vytahnout obrazky z cesty
+    // zkontrolovat, jestli tam jsou obrazky
+    // ulozit cesty k obrazkum do this->imagePaths
+
+    // nastavit this->iterations, spatial, separable, frequency, min_size, max_size, step_size
+    // nacist filtry jako v FilterLoader::LoadFromStream
+    // Run::InitFilterStatistics()
+    // Run::Start(false)
+}
+
+void MainWindow::comboBoxAnaFilterSelection(const QString & selection_text)
 {
     if (selection_text == "Gaussian")
     {
-        ui->sigma_sbox->setEnabled(true);
+        ui->ana_static_sig_rad->setEnabled(true);
+        ui->ana_dynamic_sig_rad->setEnabled(true);
+
+        if (ui->ana_static_sig_rad->isChecked())
+        {
+            ui->ana_sigma_sbox->setEnabled(true);
+        }
+        else
+        {
+            ui->ana_sigma_sbox->setEnabled(false);
+        }
+
     }
     else
     {
-        ui->sigma_sbox->setEnabled(false);
+        ui->ana_sigma_sbox->setEnabled(false);
+        ui->ana_static_sig_rad->setEnabled(false);
+        ui->ana_dynamic_sig_rad->setEnabled(false);
     }
 }
 
@@ -71,39 +113,39 @@ void MainWindow::on_playFiltersCombo_currentIndexChanged(const QString &arg1)
     cv::resize(filter, filter, Size(maxScale, maxScale));
 }
 
-void MainWindow::spinBoxFilterParamsSelection()
+void MainWindow::spinBoxAnaFilterParamsSelection()
 {
-    int min = ui->min_kernel_size_sbox->value();
-    int max = ui->max_kernel_size_sbox->value();
-    int step = ui->step_size_sbox->value();
+    int min = ui->ana_min_kernel_size_sbox->value();
+    int max = ui->ana_max_kernel_size_sbox->value();
+    int step = ui->ana_step_size_sbox->value();
 
     if(max < min)
     {
-        ui->max_kernel_size_sbox->setValue(min);
+        ui->ana_max_kernel_size_sbox->setValue(min);
         max = min;
     }
 
     if ((min%2) == 0)
     {
-        ui->min_kernel_size_sbox->setValue(min - 1);
+        ui->ana_min_kernel_size_sbox->setValue(min - 1);
     }
 
     if ((max%2) == 0)
     {
-        ui->max_kernel_size_sbox->setValue(max - 1);
+        ui->ana_max_kernel_size_sbox->setValue(max - 1);
     }
 
     if ((step%2) != 0)
     {
-        ui->step_size_sbox->setValue(step - 1);
+        ui->ana_step_size_sbox->setValue(step - 1);
     }
 
     if (((max != min) && (step == 0)))
     {
-        ui->step_size_sbox->setValue(1);
+        ui->ana_step_size_sbox->setValue(1);
     }
     else if (step > (max - min))
     {
-        ui->step_size_sbox->setValue(max - min);
+        ui->ana_step_size_sbox->setValue(max - min);
     }
 }

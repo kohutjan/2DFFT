@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1229</width>
-    <height>669</height>
+    <width>981</width>
+    <height>569</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -49,8 +49,8 @@
          <property name="horizontalSpacing">
           <number>0</number>
          </property>
-         <item row="0" column="1">
-          <widget class="QLabel" name="play2DFilter">
+         <item row="1" column="2">
+          <widget class="QLabel" name="label_6">
            <property name="text">
             <string/>
            </property>
@@ -69,8 +69,18 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="2">
-          <widget class="QLabel" name="label_6">
+         <item row="0" column="2">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="margin">
+            <number>20</number>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="play2DFilter">
            <property name="text">
             <string/>
            </property>
@@ -81,16 +91,6 @@
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="margin">
-            <number>20</number>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QLabel" name="label_3">
            <property name="text">
             <string/>
            </property>
@@ -161,7 +161,7 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
-         <widget class="QGraphicsView" name="graph_view"/>
+         <widget class="QGraphicsView" name="ana_gview"/>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
@@ -187,7 +187,7 @@
                  <number>0</number>
                 </property>
                 <item row="0" column="0">
-                 <widget class="QLabel" name="min_kernel_size_label">
+                 <widget class="QLabel" name="ana_min_kernel_size_label">
                   <property name="autoFillBackground">
                    <bool>false</bool>
                   </property>
@@ -200,7 +200,10 @@
                  </widget>
                 </item>
                 <item row="0" column="1">
-                 <widget class="QSpinBox" name="min_kernel_size_sbox">
+                 <widget class="QSpinBox" name="ana_min_kernel_size_sbox">
+                  <property name="toolTip">
+                   <string>Only odd values allowed</string>
+                  </property>
                   <property name="correctionMode">
                    <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
                   </property>
@@ -223,14 +226,17 @@
                  <number>0</number>
                 </property>
                 <item row="0" column="0">
-                 <widget class="QLabel" name="max_kernel_size_label">
+                 <widget class="QLabel" name="ana_max_kernel_size_label">
                   <property name="text">
                    <string>Maximum kernel size:</string>
                   </property>
                  </widget>
                 </item>
                 <item row="0" column="1">
-                 <widget class="QSpinBox" name="max_kernel_size_sbox">
+                 <widget class="QSpinBox" name="ana_max_kernel_size_sbox">
+                  <property name="toolTip">
+                   <string>Only odd values allowed</string>
+                  </property>
                   <property name="correctionMode">
                    <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
                   </property>
@@ -262,14 +268,17 @@
                 <item>
                  <layout class="QFormLayout" name="formLayout_2">
                   <item row="0" column="0">
-                   <widget class="QLabel" name="step_size_label">
+                   <widget class="QLabel" name="ana_step_size_label">
                     <property name="text">
                      <string>Step size:</string>
                     </property>
                    </widget>
                   </item>
                   <item row="0" column="1">
-                   <widget class="QSpinBox" name="step_size_sbox">
+                   <widget class="QSpinBox" name="ana_step_size_sbox">
+                    <property name="toolTip">
+                     <string>Only even values allowed</string>
+                    </property>
                     <property name="maximum">
                      <number>96</number>
                     </property>
@@ -283,14 +292,14 @@
                 <item>
                  <layout class="QFormLayout" name="formLayout_6">
                   <item row="0" column="0">
-                   <widget class="QLabel" name="sigma_label">
+                   <widget class="QLabel" name="ana_sigma_label">
                     <property name="text">
                      <string>Sigma:</string>
                     </property>
                    </widget>
                   </item>
                   <item row="0" column="1">
-                   <widget class="QSpinBox" name="sigma_sbox">
+                   <widget class="QSpinBox" name="ana_sigma_sbox">
                     <property name="enabled">
                      <bool>false</bool>
                     </property>
@@ -309,28 +318,75 @@
              </layout>
             </item>
             <item>
-             <widget class="QCheckBox" name="reg_spatial_con_check">
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
+             <layout class="QHBoxLayout" name="horizontalLayout_6">
+              <property name="topMargin">
+               <number>0</number>
               </property>
-              <property name="text">
-               <string>Regular spatial convolution</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="sep_spatial_con_check">
-              <property name="text">
-               <string>Separable spatial convolution</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="frequential_con_check">
-              <property name="text">
-               <string>Frequential convolution</string>
-              </property>
-             </widget>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_5">
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QCheckBox" name="ana_reg_spatial_con_check">
+                  <property name="layoutDirection">
+                   <enum>Qt::LeftToRight</enum>
+                  </property>
+                  <property name="text">
+                   <string>Regular spatial convolution</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="ana_sep_spatial_con_check">
+                  <property name="text">
+                   <string>Separable spatial convolution</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="ana_frequential_con_check">
+                  <property name="text">
+                   <string>Frequential convolution</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_6">
+                <item>
+                 <widget class="QRadioButton" name="ana_static_sig_rad">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="toolTip">
+                   <string>The same sigma will be used for all filtrations</string>
+                  </property>
+                  <property name="text">
+                   <string>Static sigma</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="ana_dynamic_sig_rad">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="toolTip">
+                   <string>Let OpenCV set sigma to 0.3*((kernel_size-1)*0.5 - 1) + 0.8</string>
+                  </property>
+                  <property name="text">
+                   <string>Dynamic sigma</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
             </item>
            </layout>
           </item>
@@ -340,7 +396,7 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QComboBox" name="filter_cbox">
+             <widget class="QComboBox" name="ana_filter_cbox">
               <item>
                <property name="text">
                 <string>Choose a filter</string>
@@ -371,14 +427,14 @@
             <item>
              <layout class="QFormLayout" name="formLayout_5">
               <item row="0" column="0">
-               <widget class="QLabel" name="iters_p_step_label">
+               <widget class="QLabel" name="ana_iters_p_step_label">
                 <property name="text">
                  <string>Iterations per step:</string>
                 </property>
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QSpinBox" name="iters_p_step_sbox">
+               <widget class="QSpinBox" name="ana_iters_p_step_sbox">
                 <property name="minimum">
                  <number>1</number>
                 </property>
@@ -395,7 +451,7 @@
                <number>0</number>
               </property>
               <item>
-               <widget class="QLabel" name="change_pic_label">
+               <widget class="QLabel" name="ana_path_label">
                 <property name="text">
                  <string>Set the picture set directory</string>
                 </property>
@@ -408,12 +464,15 @@
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="change_pic_button">
+               <widget class="QPushButton" name="ana_path_button">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
+                </property>
+                <property name="mouseTracking">
+                 <bool>true</bool>
                 </property>
                 <property name="text">
                  <string>Change path</string>
@@ -423,14 +482,14 @@
              </layout>
             </item>
             <item>
-             <widget class="QLabel" name="error_out_label">
+             <widget class="QLabel" name="ana_error_out_label">
               <property name="text">
                <string>Run error output??</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="run_button">
+             <widget class="QPushButton" name="ana_run_button">
               <property name="text">
                <string>Run</string>
               </property>
