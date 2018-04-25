@@ -17,10 +17,12 @@ public:
 
 private slots:
     void on_playLoadImg_clicked();
+    void on_change_pic_button_clicked();
 
 private:
     Ui::MainWindow *ui;
-    void comboBoxSelection(const QString& selection_text);
+    void comboBoxFilterSelection(const QString& selection_text);
+    void spinBoxFilterParamsSelection();
 };
 
 #endif // MAINWINDOW_HPP
