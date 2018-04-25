@@ -4,15 +4,15 @@
 using namespace std;
 using namespace cv;
 
-Mat FilterLoader::GetMean(int kernelSize)
+Filter FilterLoader::GetMean(string name, string type, int kernelSize)
 {
-    return this->LoadMean(kernelSize);
+    return Filter(name, type, this->LoadMean(kernelSize));
 }
 
-Mat FilterLoader::GetGauss(int kernelSize, float sigma)
+Filter FilterLoader::GetGauss(string name, string type, int kernelSize, float sigma)
 {
     Mat values = getGaussianKernel(kernelSize, sigma, CV_32F);
-    return values;
+    return Filter(name, type, values);
 }
 
 bool FilterLoader::Load(string filtersFilePath)

@@ -13,8 +13,8 @@ class FilterLoader
 {
   public:
     FilterLoader(){}
-    cv::Mat GetMean(int kernelSize);
-    cv::Mat GetGauss(int kernelSize, float sigma);
+    Filter GetMean(std::string name, std::string type, int kernelSize);
+    Filter GetGauss(std::string name, std::string type, int kernelSize, float sigma);
     bool Load(std::string filtersFilePath);
     void LoadFromStream(std::ifstream &filtersStream);
     cv::Mat LoadMean(int kernelSize);
