@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     this->playFilters["Mean"] = this->filterLoader.GetMean("Mean", "mean", 5);
-    this->playFilters["Gaussian"] = this->filterLoader.GetGauss("Gaussian", "gauss", 5, 0.1);
+    this->playFilters["Gaussian"] = this->filterLoader.GetGauss("Gaussian", "gauss", 5, 1);
     QObject::connect(ui->filter_cbox, static_cast<void (QComboBox::*)(const QString &)> (&QComboBox::currentIndexChanged),
                      this, &MainWindow::comboBoxFilterSelection);
     QObject::connect(ui->min_kernel_size_sbox, &QAbstractSpinBox::editingFinished, this, &MainWindow::spinBoxFilterParamsSelection);
@@ -32,12 +32,14 @@ void MainWindow::on_playLoadImg_clicked()
     dialog.setViewMode(QFileDialog::Detail);
     QStringList fileNames;
     if (dialog.exec())
+    {
       fileNames = dialog.selectedFiles();
       QPixmap pixmap(fileNames[0]);
       int scaleW = ui->playInputImg->width();
       int scaleH = ui->playInputImg->height();
       ui->playInputImg->setScaledContents(true);
       ui->playInputImg->setPixmap(pixmap.scaled(scaleW, scaleH, Qt::KeepAspectRatio));
+    }
 }
 
 void MainWindow::on_change_pic_button_clicked()
@@ -67,8 +69,30 @@ void MainWindow::on_playFiltersCombo_currentIndexChanged(const QString &arg1)
     Mat filter = this->playFilters[arg1.toStdString()].getValues();
     int scaleW = ui->play2DFilter->width();
     int scaleH = ui->play2DFilter->height();
-    int maxScale = max(scaleW, scaleH);
-    cv::resize(filter, filter, Size(maxScale, maxScale));
+    int minScale = min(scaleW, scaleH);
+    double min, max;
+    minMaxLoc(filter, &min, &max);
+    Mat filterGray;
+    // Scale float mat to unsigned int (grayscale)
+    if (abs(max - min) > 0.01)
+    {
+        filter.convertTo(filterGray, CV_8U, 255.0 / (max - min), -255.0 * min / (max - min));
+    }
+    else
+    {
+        filter.convertTo(filterGray, CV_8U, 0, 127);
+    }
+    cv::resize(filterGray, filterGray, Size(minScale, minScale));
+    // Convert OpenCV img to Qt img
+    QVector<QRgb> colorTable;
+    for (int i=0; i<256; i++)
+        colorTable.push_back(qRgb(i,i,i));
+    const uchar *qImageBuffer = (const uchar*)filterGray.data;
+    QImage img(qImageBuffer, filterGray.cols, filterGray.rows, filterGray.step, QImage::Format_Indexed8);
+    img.setColorTable(colorTable);
+    QPixmap pixmap = QPixmap::fromImage(img);
+    ui->play2DFilter->setScaledContents(true);
+    ui->play2DFilter->setPixmap(pixmap.scaled(scaleW, scaleH, Qt::KeepAspectRatio));
 }
 
 void MainWindow::spinBoxFilterParamsSelection()
