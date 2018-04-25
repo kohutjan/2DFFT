@@ -1,4 +1,4 @@
-#include "spatial_convolution.hpp"
+#include "../include/spatial_convolution.hpp"
 
 using namespace cv;
 
