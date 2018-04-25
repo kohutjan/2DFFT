@@ -11,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    QObject::connect(ui->filter_cbox, static_cast<void (QComboBox::*)(const QString &)> (&QComboBox::currentIndexChanged),
+                     this, &MainWindow::comboBoxSelection);
 }
 
 MainWindow::~MainWindow()
@@ -34,4 +36,16 @@ void MainWindow::on_playLoadImg_clicked()
       ui->playInputImg->setPixmap(pixmap.scaled(scaleW, scaleH, Qt::KeepAspectRatio));
 }
 
+void MainWindow::comboBoxSelection(const QString & selection_text)
+{
+    if (selection_text == "Gaussian")
+    {
+        ui->sigma_sbox->setEnabled(true);
+    }
+    else
+    {
+        ui->sigma_sbox->setEnabled(false);
+    }
+
+}
 

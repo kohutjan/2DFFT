@@ -20,6 +20,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    void comboBoxSelection(const QString& selection_text);
 };
 
 #endif // MAINWINDOW_HPP
