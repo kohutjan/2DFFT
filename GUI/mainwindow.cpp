@@ -462,7 +462,7 @@ void MainWindow::spinBoxAnaFilterParamsSelection()
 
     if (((max != min) && (step == 0)))
     {
-        ui->ana_step_size_spin->setValue(1);
+        ui->ana_step_size_spin->setValue(2);
     }
     else if (step > (max - min))
     {
