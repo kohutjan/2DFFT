@@ -1,6 +1,7 @@
 #include "mainwindow.hpp"
 #include "ui_mainwindow.h"
 #include <QFileDialog>
+#include <QtCharts>
 
 using namespace std;
 using namespace cv;
@@ -10,6 +11,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    QtCharts::QChart *chart = new QtCharts::QChart();
+    QtCharts::QChartView *chartView = new QtCharts::QChartView(chart, ui->analytics_tab);
+    ui->analytics_tab->layout()->replaceWidget(ui->ana_temp_label, chartView);
+
     this->playFilters["Mean"] = this->filterLoader.GetMean("Mean", "mean", 5);
     this->playFilters["Gaussian"] = this->filterLoader.GetGauss("Gaussian", "gauss", 5, 0.1);
     QObject::connect(ui->ana_filter_cbox, static_cast<void (QComboBox::*)(const QString &)> (&QComboBox::currentIndexChanged),
@@ -17,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->ana_min_kernel_size_sbox, &QAbstractSpinBox::editingFinished, this, &MainWindow::spinBoxAnaFilterParamsSelection);
     QObject::connect(ui->ana_max_kernel_size_sbox, &QAbstractSpinBox::editingFinished, this, &MainWindow::spinBoxAnaFilterParamsSelection);
     QObject::connect(ui->ana_step_size_sbox, &QAbstractSpinBox::editingFinished, this, &MainWindow::spinBoxAnaFilterParamsSelection);
+
 }
 
 MainWindow::~MainWindow()
