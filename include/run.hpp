@@ -26,7 +26,12 @@ class Run
                     std::vector<std::string> _filtersInsertOrder)
                     { filters = _filters; filtersInsertOrder = _filtersInsertOrder; }
     void InitFilterStatistics();
+    void AddImagePath(std::string path);
+    std::vector<std::string> GetImagePaths();
+    void SetIterations(int iterations);
+    void SetConvolutions(bool regular_spatial, bool separable_spatial, bool frequency);
     bool Start(bool show);
+    bool isSeparable(cv::Mat kernel, cv::Mat &kernelX, cv::Mat &kernelY);
     std::map<std::string, FilterStatistic> statistics;
     ~Run(){}
   private:
@@ -35,9 +40,9 @@ class Run
     bool spatial;
     bool separable;
     bool frequency;
+    bool dirSelected;
     std::map<std::string, Filter> filters;
     std::vector<std::string> filtersInsertOrder;
-    bool isSeparable(cv::Mat kernel, cv::Mat &kernelX, cv::Mat &kernelY);
 };
 
 #endif

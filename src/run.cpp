@@ -40,7 +40,7 @@ bool Run::Start(bool show)
         for (int i = 0; i < this->iterations; ++i)
         {
           auto beginSpatial = chrono::high_resolution_clock::now();
-          spatialConvolution.Regular();
+          spatialConvolution.OpenCVRegular();
           auto endSpatial = chrono::high_resolution_clock::now();
           duration += endSpatial - beginSpatial;
         }
@@ -317,4 +317,26 @@ bool Run::isSeparable(Mat kernel, Mat &kernelX, Mat &kernelY)
   else { //non-separable
     return false;
   }
+}
+
+void Run::AddImagePath(string path)
+{
+    this->imagePaths.push_back(path);
+}
+
+void Run::SetIterations(int iterations)
+{
+    this->iterations = iterations;
+}
+
+void Run::SetConvolutions(bool regular_spatial, bool separable_spatial, bool frequency)
+{
+    this->spatial = regular_spatial;
+    this->separable = separable_spatial;
+    this->frequency = frequency;
+}
+
+vector<string> Run::GetImagePaths()
+{
+    return this->imagePaths;
 }

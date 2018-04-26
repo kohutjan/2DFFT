@@ -8,6 +8,9 @@
 #include <string>
 #include <iostream>
 
+#define GAUSS 0
+#define MEAN 1
+
 namespace Ui {
 class MainWindow;
 }
@@ -31,6 +34,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     FilterLoader filterLoader;
+    Run *analytics_run;
     std::map<std::string, Filter> playFilters;
     void comboBoxAnaFilterSelection(const QString& selection_text);
     void spinBoxAnaFilterParamsSelection();
