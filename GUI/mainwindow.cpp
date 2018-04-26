@@ -225,37 +225,65 @@ void MainWindow::on_ana_run_button_clicked()
     QLineSeries *separable = new QLineSeries;
     QLineSeries *frequential = new QLineSeries;
 
-    if (reg_con)
-    {
-        ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->addSeries(regular);
-        regular->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisX());
-        regular->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisY());
-        regular->setName("regular spatial convolution");
-    }
+    QScatterSeries *regular_scatter = new QScatterSeries;
+    QScatterSeries *separable_scatter = new QScatterSeries;
+    QScatterSeries *frequential_scatter = new QScatterSeries;
 
-    if (sep_con)
+    if (max_size == min_size)
     {
-        ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->addSeries(separable);
-        separable->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisX());
-        separable->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisY());
-        separable->setName("separable spatial convolution");
-    }
+        if (reg_con)
+        {
+            ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->addSeries(regular_scatter);
+            regular_scatter->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisX());
+            regular_scatter->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisY());
+            regular_scatter->setName("regular spatial convolution");
+        }
 
-    if (fr_con)
-    {
-        ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->addSeries(frequential);
-        frequential->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisX());
-        frequential->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisY());
-        frequential->setName("frequential spatial convolution");
-    }
+        if (sep_con)
+        {
+            ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->addSeries(separable_scatter);
+            separable_scatter->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisX());
+            separable_scatter->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisY());
+            separable_scatter->setName("separable spatial convolution");
+        }
 
-    if (max_size != min_size)
-    {
-        ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisX()->setRange(min_size, max_size);
+        if (fr_con)
+        {
+            ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->addSeries(frequential_scatter);
+            frequential_scatter->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisX());
+            frequential_scatter->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisY());
+            frequential_scatter->setName("frequential spatial convolution");
+        }
+
+        ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisX()->setRange(max_size - 2, max_size + 2);
     }
     else
     {
-        ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisX()->setRange(max_size - 2, max_size + 2);
+        if (reg_con)
+        {
+            ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->addSeries(regular);
+            regular->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisX());
+            regular->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisY());
+            regular->setName("regular spatial convolution");
+        }
+
+        if (sep_con)
+        {
+            ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->addSeries(separable);
+            separable->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisX());
+            separable->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisY());
+            separable->setName("separable spatial convolution");
+        }
+
+        if (fr_con)
+        {
+            ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->addSeries(frequential);
+            frequential->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisX());
+            frequential->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisY());
+            frequential->setName("frequential spatial convolution");
+        }
+
+        ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisX()->setRange(min_size, max_size);
     }
 
     if (step_size == 0) // zarazka, pokud je 0, tak min_size == max_size a for by cyklil nekonecne
@@ -298,7 +326,14 @@ void MainWindow::on_ana_run_button_clicked()
             }
             meanDuration = meanDuration / imagePaths.size();
 
-            regular->append(i, meanDuration);
+            if (max_size == min_size)
+            {
+                regular_scatter->append(i, meanDuration);
+            }
+            else
+            {
+                regular->append(i, meanDuration);
+            }
 
             if (maxDuration < meanDuration)
             {
@@ -315,7 +350,14 @@ void MainWindow::on_ana_run_button_clicked()
             }
             meanDuration = meanDuration / imagePaths.size();
 
-            separable->append(i, meanDuration);
+            if (max_size == min_size)
+            {
+                separable_scatter->append(i, meanDuration);
+            }
+            else
+            {
+                separable->append(i, meanDuration);
+            }
 
             if (maxDuration < meanDuration)
             {
@@ -332,7 +374,14 @@ void MainWindow::on_ana_run_button_clicked()
             }
             meanDuration = meanDuration / imagePaths.size();
 
-            frequential->append(i, meanDuration);
+            if (max_size == min_size)
+            {
+                frequential_scatter->append(i, meanDuration);
+            }
+            else
+            {
+                frequential->append(i, meanDuration);
+            }
 
             if (maxDuration < meanDuration)
             {
