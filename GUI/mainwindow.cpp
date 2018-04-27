@@ -12,8 +12,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     // --- Playground start ---
-    this->playFilters["Mean"] = this->filterLoader.GetMean("Mean", "mean", 155);
-    this->playFilters["Gaussian"] = this->filterLoader.GetGauss("Gaussian", "gauss", 155, 1);
+    this->playFilters["Mean"] = this->filterLoader.GetMean("Mean", "mean", 5);
+    this->playFilters["Gaussian"] = this->filterLoader.GetGauss("Gaussian", "gauss", 5, 1);
     ui->playForward->setEnabled(false);
     // --- Playground end ---
     
@@ -403,7 +403,7 @@ void MainWindow::on_ana_run_button_clicked()
         filtersInsertOrder.push_back(filter_name_std);
         analytics_run->setFilters(filters, filtersInsertOrder);
         analytics_run->InitFilterStatistics();
-        analytics_run->Start(false);
+        analytics_run->Start(false); //nastavit na true pro kontrolu vysledku filtrace
 
         if (reg_con)
         {
