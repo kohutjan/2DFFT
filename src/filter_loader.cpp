@@ -11,8 +11,9 @@ Filter FilterLoader::GetMean(string name, string type, int kernelSize)
 
 Filter FilterLoader::GetGauss(string name, string type, int kernelSize, float sigma)
 {
-    Mat values = getGaussianKernel(kernelSize, sigma, CV_32F);
-    return Filter(name, type, values);
+    Mat gauss1D = getGaussianKernel(kernelSize, sigma, CV_32F);
+    Mat gauss2D = gauss1D * gauss1D.t();
+    return Filter(name, type, gauss2D);
 }
 
 bool FilterLoader::Load(string filtersFilePath)
