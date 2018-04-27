@@ -36,7 +36,6 @@ private:
     Ui::MainWindow *ui;
     FilterLoader filterLoader;
     Run *analytics_run;
-    std::map<std::string, Filter> playFilters;
     void comboBoxAnaFilterSelection(const QString& selection_text);
     void spinBoxAnaFilterParamsSelection();
     SpatialConvolution spatialConvolution;
