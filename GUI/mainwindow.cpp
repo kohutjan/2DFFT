@@ -12,8 +12,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     // --- Playground start ---
-    this->playFilters["Mean"] = this->filterLoader.GetMean("Mean", "mean", 155);
-    this->playFilters["Gaussian"] = this->filterLoader.GetGauss("Gaussian", "gauss", 155, 1);
+    this->playFilters["Mean"] = this->filterLoader.GetMean("Mean", "mean", 5);
+    this->playFilters["Gaussian"] = this->filterLoader.GetGauss("Gaussian", "gauss", 5, 1);
     ui->playForward->setEnabled(false);
     // --- Playground end ---
     
