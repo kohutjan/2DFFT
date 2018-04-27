@@ -30,6 +30,7 @@ private slots:
     void on_ana_run_button_clicked();
     void on_ana_static_sig_rad_clicked();
     void on_ana_dynamic_sig_rad_clicked();
+    void on_playForward_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -38,6 +39,17 @@ private:
     std::map<std::string, Filter> playFilters;
     void comboBoxAnaFilterSelection(const QString& selection_text);
     void spinBoxAnaFilterParamsSelection();
+    SpatialConvolution spatialConvolution;
+    FrequencyConvolution frequencyConvolution;
+    std::string playInputPath;
+    std::map<std::string, Filter> playFilters;
+    void on_change_pic_button_clicked();
+    void comboBoxFilterSelection(const QString& selection_text);
+    void spinBoxFilterParamsSelection();
+    QImage ConvertOpenCVToQtImg(cv::Mat input);
+    cv::Mat GetSpectrumImg(cv::Mat input);
+    void RearrangeSpectrum(cv::Mat magI);
+    cv::Mat SpectrumMagnitude(cv::Mat specCplx);
 };
 
 #endif // MAINWINDOW_HPP
