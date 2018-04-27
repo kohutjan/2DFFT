@@ -403,7 +403,7 @@ void MainWindow::on_ana_run_button_clicked()
         filtersInsertOrder.push_back(filter_name_std);
         analytics_run->setFilters(filters, filtersInsertOrder);
         analytics_run->InitFilterStatistics();
-        analytics_run->Start(false);
+        analytics_run->Start(false); //nastavit na true pro kontrolu vysledku filtrace
 
         if (reg_con)
         {
