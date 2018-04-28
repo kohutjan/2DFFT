@@ -4,6 +4,20 @@
 using namespace std;
 using namespace cv;
 
+Filter FilterLoader::GetFilter(string name, string type, int kernelSize)
+{
+    if (type == "Mean")
+    {
+        return this->GetMean(name, type, kernelSize);
+    }
+    if (type == "Gaussian")
+    {
+        return this->GetGauss(name, type, kernelSize, -1);
+    }
+    Filter filter;
+    return filter;
+}
+
 Filter FilterLoader::GetMean(string name, string type, int kernelSize)
 {
     return Filter(name, type, this->LoadMean(kernelSize));

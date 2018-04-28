@@ -86,17 +86,35 @@ bool Run::Start(bool show)
         flip(this->filters[filterName].getValues(), flipedFilter, -1);
         frequencyConvolution.setData(src, dst, flipedFilter);
 
+        chrono::duration<double, std::milli> durationFFTImg = std::chrono::milliseconds::zero();
+        chrono::duration<double, std::milli> durationFFTFilter = std::chrono::milliseconds::zero();
+        chrono::duration<double, std::milli> durationMUL = std::chrono::milliseconds::zero();
+        chrono::duration<double, std::milli> durationIFFT = std::chrono::milliseconds::zero();
         chrono::duration<double, std::milli> duration = std::chrono::milliseconds::zero();
         for (int i = 0; i < this->iterations; ++i)
         {
-          auto beginSeparable = chrono::high_resolution_clock::now();
-          frequencyConvolution.FFT();
+          auto beginFFTImg = chrono::high_resolution_clock::now();
+          frequencyConvolution.FFTImg();
+          auto endFFTImg = chrono::high_resolution_clock::now();
+          auto beginFFTFilter = chrono::high_resolution_clock::now();
+          frequencyConvolution.FFTFilter();
+          auto endFFTFilter = chrono::high_resolution_clock::now();
+          auto beginMUL = chrono::high_resolution_clock::now();
           frequencyConvolution.MUL();
+          auto endMUL = chrono::high_resolution_clock::now();
+          auto beginIFFT = chrono::high_resolution_clock::now();
           frequencyConvolution.IFFT();
-          auto endSeparable = chrono::high_resolution_clock::now();
-          duration += endSeparable - beginSeparable;
+          auto endIFFT = chrono::high_resolution_clock::now();
+          durationFFTImg += endFFTImg - beginFFTImg;
+          durationFFTFilter += endFFTFilter - beginFFTFilter;
+          durationMUL += endMUL - beginMUL;
+          durationIFFT += endIFFT - beginIFFT;
         }
-
+        duration = durationFFTImg + durationFFTFilter + durationMUL + durationIFFT;
+        this->statistics[filterName].FFTImgDurations[imagePath] = durationFFTImg;
+        this->statistics[filterName].FFTFilterDurations[imagePath] = durationFFTFilter;
+        this->statistics[filterName].MULDurations[imagePath] = durationMUL;
+        this->statistics[filterName].IFFTDurations[imagePath] = durationIFFT;
         this->statistics[filterName].frequentialDurations[imagePath] = duration;
 
         if (show)

@@ -13,6 +13,7 @@ class FilterLoader
 {
   public:
     FilterLoader(){}
+    Filter GetFilter(std::string name, std::string type, int kernelSize);
     Filter GetMean(std::string name, std::string type, int kernelSize);
     Filter GetGauss(std::string name, std::string type, int kernelSize, float sigma);
     bool Load(std::string filtersFilePath);
