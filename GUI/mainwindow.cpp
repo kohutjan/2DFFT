@@ -204,6 +204,31 @@ void MainWindow::on_playForward_clicked()
     Mat outputSpectrumImg = this->GetSpectrumImg(dst);
     this->SetImgToLabel(ui->playSpecOutput, outputSpectrumImg);
     // Measure times
+    string filterType = ui->playFiltersCombo->currentText().toStdString();
+    int kernelSize = ui->playKernelSizeSpin->value();
+    Filter filter = filterLoader.GetFilter(filterType, filterType, kernelSize);
+    map<string, Filter> filters;
+    filters[filterType] = filter;
+    vector<string> filtersInsertOrder(1, filterType);
+    Run run;
+    run.SetConvolutions(true, false, true);
+    run.SetIterations(1);
+    run.AddImagePath(this->playInputPath);
+    run.setFilters(filters, filtersInsertOrder);
+    run.InitFilterStatistics();
+    run.Start(false);
+    FilterStatistic statistic = run.statistics[filterType];
+    double spatialDuration = statistic.spatialDurations[this->playInputPath].count();
+    double FFTImgDuration = statistic.FFTImgDurations[this->playInputPath].count();
+    double FFTFilterDuration = statistic.FFTFilterDurations[this->playInputPath].count();
+    double MULDuration = statistic.MULDurations[this->playInputPath].count();
+    double IFFTDuration = statistic.IFFTDurations[this->playInputPath].count();
+    // Show measured times
+    ui->play2DInputFilterTime->setText(QString::number(spatialDuration, 'g', 3));
+    ui->play2DInputSpecInputTime->setText(QString::number(FFTImgDuration, 'g', 3));
+    ui->play2DFilterSpecFilterTime->setText(QString::number(FFTFilterDuration, 'g', 3));
+    ui->playSpecInputFilterTime->setText(QString::number(MULDuration, 'g', 3));
+    ui->play2DOutputSpecOutputTime->setText(QString::number(IFFTDuration, 'g', 3));
 }
 
 // --- Playground end ---
