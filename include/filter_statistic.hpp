@@ -12,6 +12,10 @@ class FilterStatistic
     std::string name;
     std::map<std::string, std::chrono::duration<double>> spatialDurations;
     std::map<std::string, std::chrono::duration<double>> separableDurations;
+    std::map<std::string, std::chrono::duration<double>> FFTImgDurations;
+    std::map<std::string, std::chrono::duration<double>> FFTFilterDurations;
+    std::map<std::string, std::chrono::duration<double>> MULDurations;
+    std::map<std::string, std::chrono::duration<double>> IFFTDurations;
     std::map<std::string, std::chrono::duration<double>> frequentialDurations;
     ~FilterStatistic(){}
 };

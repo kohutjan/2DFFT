@@ -12,9 +12,34 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     // --- Playground start ---
-    this->playFilters["Mean"] = this->filterLoader.GetMean("Mean", "mean", 5);
-    this->playFilters["Gaussian"] = this->filterLoader.GetGauss("Gaussian", "gauss", 5, 1);
+    ui->playFiltersCombo->setEnabled(false);
+    ui->playKernelSizeSpin->setEnabled(false);
     ui->playForward->setEnabled(false);
+    // Set borders
+    this->playBorderSize = 5;
+    QString borderSizeStr = "border: " + QString::number(this->playBorderSize) + "px solid black";
+    ui->play2DInput->setStyleSheet(borderSizeStr);
+    ui->playSpecInput->setStyleSheet(borderSizeStr);
+    ui->play2DFilter->setStyleSheet(borderSizeStr);
+    ui->playSpecFilter->setStyleSheet(borderSizeStr);
+    ui->play2DOutput->setStyleSheet(borderSizeStr);
+    ui->playSpecOutput->setStyleSheet(borderSizeStr);
+    // Set Pipes
+    QString pathToImgs =  QDir::currentPath() + "/images/";
+    QString greenStar = pathToImgs + "green_star.png";
+    QString greenEqual = pathToImgs + "green_equal.png";
+    QString redDown = pathToImgs + "red_down.png";
+    QString redMul = pathToImgs + "red_mul.png";
+    QString redEqual = pathToImgs + "red_equal";
+    QString redUp = pathToImgs + "red_up.png";
+    this->SetPipeToLabel(ui->play2DInputFilterPipe, greenStar);
+    this->SetPipeToLabel(ui->play2DFilterOutputPipe, greenEqual);
+    this->SetPipeToLabel(ui->playSpecInputFilterPipe, redMul);
+    this->SetPipeToLabel(ui->playSpecFilterOutputPipe, redEqual);
+    this->SetPipeToLabel(ui->play2DInputSpecInputPipe, redDown);
+    this->SetPipeToLabel(ui->play2DFilterSpecFilterPipe, redDown);
+    this->SetPipeToLabel(ui->play2DOutputSpecOutputPipe, redUp);
+    QObject::connect(ui->playKernelSizeSpin, &QAbstractSpinBox::editingFinished, this, &MainWindow::playKernelSizeSelection);
     // --- Playground end ---
     
     // --- Analytics start ---
@@ -55,9 +80,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QtCharts::QChartView *chartView = new QtCharts::QChartView(chart, ui->analytics_tab);
     chartView->setObjectName("ana_chartview");
     ui->analytics_tab->layout()->replaceWidget(ui->ana_temp_label, chartView);
-
-    this->playFilters["Mean"] = this->filterLoader.GetMean("Mean", "mean", 5);
-    this->playFilters["Gaussian"] = this->filterLoader.GetGauss("Gaussian", "gauss", 5, 0.1);
     QObject::connect(ui->ana_filter_combo, static_cast<void (QComboBox::*)(const QString &)> (&QComboBox::currentIndexChanged),
                      this, &MainWindow::comboBoxAnaFilterSelection);
     QObject::connect(ui->ana_min_kernel_size_spin, &QAbstractSpinBox::editingFinished, this, &MainWindow::spinBoxAnaFilterParamsSelection);
@@ -87,82 +109,101 @@ void MainWindow::on_playLoadImg_clicked()
       fileNames = dialog.selectedFiles();
       this->playInputPath = fileNames[0].toStdString();
       QPixmap inputPixmap(fileNames[0]);
-      int scaleW = ui->play2DInput->width();
-      int scaleH = ui->play2DInput->height();
-      ui->play2DInput->setPixmap(inputPixmap.scaled(scaleW, scaleH, Qt::KeepAspectRatio));
+      this->SetPixmapToLabel(ui->play2DInput, inputPixmap);
       // Create spectrum of input image and show it
-      Mat inputImg = imread(this->playInputPath, CV_LOAD_IMAGE_GRAYSCALE);
-      Mat inputSpectrumImg = this->GetSpectrumImg(inputImg);
-      QImage inputSpectrumQtImg = this->ConvertOpenCVToQtImg(inputSpectrumImg);
-      QPixmap inputSpectrumPixmap = QPixmap::fromImage(inputSpectrumQtImg);
-      ui->playSpecInput->setPixmap(inputSpectrumPixmap.scaled(scaleW, scaleH, Qt::KeepAspectRatio));
-      if (not ui->playFiltersCombo->currentText().toStdString().empty())
-      {
-          ui->playForward->setEnabled(true);
-      }
+      this->playInputImg = imread(this->playInputPath, CV_LOAD_IMAGE_GRAYSCALE);
+      Mat inputSpectrumImg = this->GetSpectrumImg(this->playInputImg);
+      this->SetImgToLabel(ui->playSpecInput, inputSpectrumImg);
+      ui->playFiltersCombo->setEnabled(true);
+    }
+}
+
+void MainWindow::playSetFilter()
+{
+    String filterType = ui->playFiltersCombo->currentText().toStdString();
+    int kernelSize = ui->playKernelSizeSpin->value();
+    this->playFilter = this->filterLoader.GetFilter(filterType, filterType, kernelSize).getValues();
+}
+
+void MainWindow::playShowFilter()
+{
+    Mat filterSpectrumImg = this->GetSpectrumImg(this->playFilter, this->playInputImg);
+    this->SetImgToLabel(ui->playSpecFilter, filterSpectrumImg);
+    // Convert filter so it can be shown
+    Mat filterGray;
+    double min, max;
+    minMaxLoc(this->playFilter, &min, &max);
+    if (abs(min - max) < 0.001)
+    {
+        this->playFilter.convertTo(filterGray, CV_32F, 0, 0.5);
+    }
+    else
+    {
+        normalize(this->playFilter, filterGray, 0, 1, CV_MINMAX);
+    }
+    filterGray.convertTo(filterGray, CV_8U, 255);
+    // Set the filter height to the height of it's spectrum
+    QImage filterQtImg = this->ConvertOpenCVToQtImg(filterGray);
+    QPixmap filterPixmap = QPixmap::fromImage(filterQtImg);
+    int scaleFilterW = ui->playSpecFilter->pixmap()->width();
+    int scaleFilterH = ui->playSpecFilter->pixmap()->height();
+    ui->play2DFilter->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    ui->play2DFilter->setPixmap(filterPixmap.scaled(scaleFilterW, scaleFilterH, Qt::KeepAspectRatio));
+}
+
+void MainWindow::playFilterParamsChanged()
+{
+    String filterType = ui->playFiltersCombo->currentText().toStdString();
+    if (not (filterType.empty() || this->playInputPath.empty()))
+    {
+        this->playSetFilter();
+        this->playShowFilter();
+        ui->playKernelSizeSpin->setEnabled(true);
+        ui->playForward->setEnabled(true);
+    }
+    else
+    {
+        ui->playKernelSizeSpin->setEnabled(false);
+        ui->playForward->setEnabled(false);
     }
 }
 
 void MainWindow::on_playFiltersCombo_currentIndexChanged(const QString &arg1)
 {
-    if (not arg1.toStdString().empty())
+    this->playFilterParamsChanged();
+}
+
+void MainWindow::playKernelSizeSelection()
+{
+    int kernelSize = ui->playKernelSizeSpin->value();
+    if ((kernelSize % 2) == 0)
     {
-        // Show filter
-        Mat filter = this->playFilters[arg1.toStdString()].getValues();
-        int scaleW = ui->play2DFilter->width();
-        int scaleH = ui->play2DFilter->height();
-        Mat filterGray;
-        normalize(filter, filterGray, 0, 1, CV_MINMAX);
-        filterGray.convertTo(filterGray, CV_8U, 255);
-        QImage img = this->ConvertOpenCVToQtImg(filterGray);
-        QPixmap pixmap = QPixmap::fromImage(img);
-        ui->play2DFilter->setPixmap(pixmap.scaled(scaleW, scaleH, Qt::KeepAspectRatio));
-        // Create spectrum of filter and show it
-        Mat filterSpectrumImg = this->GetSpectrumImg(filter);
-        QImage filterSpectrumQtImg = this->ConvertOpenCVToQtImg(filterSpectrumImg);
-        QPixmap filterSpectrumPixmap = QPixmap::fromImage(filterSpectrumQtImg);
-        ui->playSpecFilter->setPixmap(filterSpectrumPixmap.scaled(scaleW, scaleH, Qt::KeepAspectRatio));
-        if (not this->playInputPath.empty())
-        {
-          ui->playForward->setEnabled(true);
-        }
+        --kernelSize;
+        ui->playKernelSizeSpin->setValue(kernelSize);
     }
-    else
-    {
-        ui->playForward->setEnabled(false);
-    }
+    this->playFilterParamsChanged();
 }
 
 void MainWindow::on_playForward_clicked()
 {
-    string filterName = ui->playFiltersCombo->currentText().toStdString();
-    if (not (filterName.empty() || this->playInputPath.empty()))
-    {
-        Filter filter = this->playFilters[filterName];
-        //Prepare spatial convolution
-        Mat flipedFilter = filter.getValues();
-        flip(filter.getValues(), flipedFilter, -1);
-        Mat src = imread(this->playInputPath, CV_LOAD_IMAGE_GRAYSCALE);
-        Mat dst = src.clone();
-        Mat srcF;
-        Mat dstF;
-        src.convertTo(srcF, CV_32FC1);
-        dst.convertTo(dstF, CV_32FC1);
-        spatialConvolution.setData(srcF, dstF, flipedFilter);
-        spatialConvolution.OpenCVRegular();
-        dstF.convertTo(dst, CV_8UC1);
-        int scaleW = ui->play2DOutput->width();
-        int scaleH = ui->play2DOutput->height();
-        // Show ouptut
-        QImage outputQtImg = this->ConvertOpenCVToQtImg(dst);
-        QPixmap outputPixmap = QPixmap::fromImage(outputQtImg);
-        ui->play2DOutput->setPixmap(outputPixmap.scaled(scaleW, scaleH, Qt::KeepAspectRatio));
-        // Create spectrum of output and show it
-        Mat outputSpectrumImg = this->GetSpectrumImg(dst);
-        QImage outputSpectrumQtImg = this->ConvertOpenCVToQtImg(outputSpectrumImg);
-        QPixmap outputSpectrumPixmap = QPixmap::fromImage(outputSpectrumQtImg);
-        ui->playSpecOutput->setPixmap(outputSpectrumPixmap.scaled(scaleW, scaleH, Qt::KeepAspectRatio));
-    }
+    // Prepare spatial convolution
+    Mat flipedFilter = this->playFilter.clone();
+    flip(this->playFilter, flipedFilter, -1);
+    Mat src = this->playInputImg.clone();
+    Mat dst = this->playInputImg.clone();
+    Mat srcF;
+    Mat dstF;
+    src.convertTo(srcF, CV_32FC1);
+    dst.convertTo(dstF, CV_32FC1);
+    spatialConvolution.setData(srcF, dstF, flipedFilter);
+    spatialConvolution.OpenCVRegular();
+    dstF.convertTo(dst, CV_8UC1);
+    // Show ouptut
+    this->SetImgToLabel(ui->play2DOutput, dst);
+    // Create spectrum of output and show it
+    Mat outputSpectrumImg = this->GetSpectrumImg(dst);
+    this->SetImgToLabel(ui->playSpecOutput, outputSpectrumImg);
+    // Measure times
 }
 
 // --- Playground end ---
@@ -555,8 +596,31 @@ void MainWindow::spinBoxAnaFilterParamsSelection()
 // --- Analytics end ---
 
 
-// --- Helper methods ---
+// --- Helpers ---
 
+void MainWindow::SetPipeToLabel(QLabel *label, QString pathToImg)
+{
+    QPixmap pixmap(pathToImg);
+    int scaleW = label->width();
+    int scaleH = label->height();
+    label->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    label->setPixmap(pixmap.scaled(scaleW, scaleH, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+}
+
+void MainWindow::SetImgToLabel(QLabel *label, Mat img)
+{
+    QImage qImg = this->ConvertOpenCVToQtImg(img);
+    QPixmap pixmap = QPixmap::fromImage(qImg);
+    this->SetPixmapToLabel(label, pixmap);
+}
+
+void MainWindow::SetPixmapToLabel(QLabel *label, QPixmap &pixmap)
+{
+    int scaleW = label->width() - this->playBorderSize * 2;
+    int scaleH = label->height() - this->playBorderSize * 2;
+    label->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    label->setPixmap(pixmap.scaled(scaleW, scaleH, Qt::KeepAspectRatio));
+}
 
 QImage MainWindow::ConvertOpenCVToQtImg(cv::Mat input)
 {
@@ -567,6 +631,22 @@ QImage MainWindow::ConvertOpenCVToQtImg(cv::Mat input)
     QImage img(qImageBuffer, input.cols, input.rows, input.step, QImage::Format_Indexed8);
     img.setColorTable(colorTable);
     return img;
+}
+
+Mat MainWindow::GetSpectrumImg(Mat filter, Mat img)
+{
+    Mat spectrum;
+    Size dftSize;
+    dftSize.width = getOptimalDFTSize(img.cols);
+    dftSize.height = getOptimalDFTSize(img.rows);
+    Mat filterPadded;
+    filterPadded = Mat::zeros(dftSize, CV_32FC1);
+    filter.convertTo(filterPadded(Rect(0, 0, filter.cols, filter.rows)), filterPadded.type());
+    dft(filterPadded, spectrum, DFT_COMPLEX_OUTPUT, filter.rows);
+    this->RearrangeSpectrum(spectrum);
+    Mat spectrumImg;
+    this->SpectrumMagnitude(spectrum).convertTo(spectrumImg, CV_8UC1, 255);
+    return spectrumImg;
 }
 
 Mat MainWindow::GetSpectrumImg(Mat input)
@@ -612,6 +692,4 @@ Mat MainWindow::SpectrumMagnitude(Mat specCplx)
     normalize( specMag, specMag, 0, 1, CV_MINMAX );
     return specMag;
 }
-
-
 

@@ -2,6 +2,7 @@
 #define MAINWINDOW_HPP
 
 #include <QMainWindow>
+#include <QLabel>
 #include "../include/run.hpp"
 #include "../include/filter_loader.hpp"
 #include <map>
@@ -34,21 +35,37 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    FilterLoader filterLoader;
+    // --- Playground start ---
+    void playSetFilter();
+    void playShowFilter();
+    void playFilterParamsChanged();
+    void playKernelSizeSelection();
+    std::string playInputPath;
+    cv::Mat playInputImg;
+    cv::Mat playFilter;
+    int playBorderSize;
+    // --- Playground end ---
+    // --- Analytics start ---
     Run *analytics_run;
     void comboBoxAnaFilterSelection(const QString& selection_text);
     void spinBoxAnaFilterParamsSelection();
-    SpatialConvolution spatialConvolution;
-    FrequencyConvolution frequencyConvolution;
-    std::string playInputPath;
-    std::map<std::string, Filter> playFilters;
     void on_change_pic_button_clicked();
     void comboBoxFilterSelection(const QString& selection_text);
     void spinBoxFilterParamsSelection();
+    // --- Analytics end ---
+    // --- Helpers ---
+    FilterLoader filterLoader;
+    SpatialConvolution spatialConvolution;
+    FrequencyConvolution frequencyConvolution;
     QImage ConvertOpenCVToQtImg(cv::Mat input);
     cv::Mat GetSpectrumImg(cv::Mat input);
+    cv::Mat GetSpectrumImg(cv::Mat filter, cv::Mat img);
     void RearrangeSpectrum(cv::Mat magI);
     cv::Mat SpectrumMagnitude(cv::Mat specCplx);
+    void SetPipeToLabel(QLabel *label, QString pathToImg);
+    void SetImgToLabel(QLabel *label, cv::Mat img);
+    void SetPixmapToLabel(QLabel *label, QPixmap &pixmap);
+
 };
 
 #endif // MAINWINDOW_HPP

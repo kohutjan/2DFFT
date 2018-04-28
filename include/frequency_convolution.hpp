@@ -6,13 +6,15 @@
 class FrequencyConvolution : public Convolution
 {
   public:
-    FrequencyConvolution(){};
-    void FFT();
+    FrequencyConvolution(){}
+    void FFTFilter();
+    void FFTImg();
     void MUL();
     void IFFT();
     ~FrequencyConvolution(){}
 
   private:
+    cv::Size optimalSize;
     cv::Mat srcPadded;
     cv::Mat filterPadded;
     cv::Mat spectrumImgCCS;
