@@ -13,9 +13,12 @@ class FilterLoader
 {
   public:
     FilterLoader(){}
-    Filter GetFilter(std::string name, std::string type, int kernelSize);
+    Filter Get2DFilter(std::string name, std::string type, int kernelSize);
+    Filter GetSpecFilter(std::string name, std::string type, int radius, cv::Mat img);
     Filter GetMean(std::string name, std::string type, int kernelSize);
     Filter GetGauss(std::string name, std::string type, int kernelSize, float sigma);
+    Filter GetLowPass(std::string name, std::string type, int radius, cv::Mat img);
+    Filter GetHighPass(std::string name, std::string type, int radius, cv::Mat img);
     bool Load(std::string filtersFilePath);
     void LoadFromStream(std::ifstream &filtersStream);
     cv::Mat LoadMean(int kernelSize);
