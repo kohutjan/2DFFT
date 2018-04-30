@@ -132,8 +132,19 @@ void MainWindow::playSetFilter()
     }
     if (not filterSpecType.empty())
     {
-        int radius = ui->playRadiusSpin->value();
+        int radius = 15;   //ui->playRadiusSpin->value();
+        //Filter filter = this->filterLoader.GetSpecFilter(filterSpecType, filterSpecType, radius, this->playInputImg);
         this->playFilter = this->filterLoader.GetSpecFilter(filterSpecType, filterSpecType, radius, this->playInputImg).getValues();
+        /*map<string, Filter> filters;
+        filters[filterSpecType] = filter;
+        vector<string> filtersInsertOrder(1, filterSpecType);
+        Run run;
+        run.SetConvolutions(true, false, true);
+        run.SetIterations(1);
+        run.AddImagePath(this->playInputPath);
+        run.setFilters(filters, filtersInsertOrder);
+        run.InitFilterStatistics();
+        run.Start(true);*/
     }
 
 }
