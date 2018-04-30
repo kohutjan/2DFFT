@@ -26,19 +26,22 @@ public:
 
 private slots:
     void on_playLoadImg_clicked();
-    void on_playFiltersCombo_currentIndexChanged(const QString &arg1);
+    void on_play2DFiltersCombo_currentIndexChanged(const QString &arg1);
     void on_ana_path_button_clicked();
     void on_ana_run_button_clicked();
     void on_ana_static_sig_rad_clicked();
     void on_ana_dynamic_sig_rad_clicked();
     void on_playForward_clicked();
 
+    void on_playSpecFiltersCombo_currentIndexChanged(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
     // --- Playground start ---
     void playSetFilter();
     void playShowFilter();
-    void playFilterParamsChanged();
+    void play2DFilterParamsChanged();
+    void playSpecFilterParamsChanged();
     void playKernelSizeSelection();
     std::string playInputPath;
     cv::Mat playInputImg;

@@ -4,7 +4,7 @@
 using namespace std;
 using namespace cv;
 
-Filter FilterLoader::GetFilter(string name, string type, int kernelSize)
+Filter FilterLoader::Get2DFilter(string name, string type, int kernelSize)
 {
     if (type == "Mean")
     {
@@ -13,6 +13,20 @@ Filter FilterLoader::GetFilter(string name, string type, int kernelSize)
     if (type == "Gaussian")
     {
         return this->GetGauss(name, type, kernelSize, -1);
+    }
+    Filter filter;
+    return filter;
+}
+
+Filter FilterLoader::GetSpecFilter(string name, string type, int radius, Mat img)
+{
+    if (type == "Low-pass")
+    {
+        return this->GetLowPass(name, type, radius, img);
+    }
+    if (type == "High-pass")
+    {
+        return this->GetHighPass(name, type, radius, img);
     }
     Filter filter;
     return filter;
@@ -28,6 +42,26 @@ Filter FilterLoader::GetGauss(string name, string type, int kernelSize, float si
     Mat values1D = getGaussianKernel(kernelSize, sigma, CV_32F);
     Mat values2D = values1D * values1D.t();
     return Filter(name, type, values2D);
+}
+
+Filter FilterLoader::GetLowPass(string name, string type, int radius, Mat img)
+{
+    int topLeftRow = img.rows / 2 - radius;
+    int topLeftCol = img.cols / 2 - radius;
+    Mat filterSpec = Mat::zeros(Size(img.cols, img.rows), CV_32FC2);
+    filterSpec.setTo(1.0);
+    Mat square = filterSpec(Rect(Point(topLeftCol, topLeftRow), Point(topLeftCol + radius, topLeftRow + radius)));
+    square.setTo(0.0);
+    Mat filterValues;
+    idft(filterSpec, filterValues, cv::DFT_SCALE, img.rows);
+    normalize(filterValues, filterValues, 0, 1, CV_MINMAX);
+    filterValues.convertTo(filterValues, CV_8U, 255);
+    return Filter(name, type, filterValues);
+}
+
+Filter FilterLoader::GetHighPass(string name, string type, int radius, Mat img)
+{
+
 }
 
 bool FilterLoader::Load(string filtersFilePath)
