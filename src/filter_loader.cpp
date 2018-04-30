@@ -58,14 +58,14 @@ Filter FilterLoader::GetLowPass(string name, string type, int radius, Mat img)
     optimalSize.width = img.cols; //cv::getOptimalDFTSize(img.cols);
     optimalSize.height = img.rows; //cv::getOptimalDFTSize(img.rows);
 
-    Mat filterSpec = Mat::zeros(Size(optimalSize.width, optimalSize.height), CV_32FC1);
+    Mat filterSpec = Mat::zeros(Size(optimalSize.width, optimalSize.height), CV_32FC2);
     Rect centerRect(static_cast<int>((optimalSize.width / 2) - radius), static_cast<int>((optimalSize.height / 2) - radius), radius * 2, radius * 2);
-    Mat filterMask(filterSpec.rows, filterSpec.cols, CV_32FC1, cv::Scalar(0.0f, 0.0f));
+    Mat filterMask(filterSpec.rows, filterSpec.cols, CV_32FC2, cv::Scalar(0.0f, 0.0f));
     filterMask(centerRect).setTo(Scalar(1.0f, 1.0f));
-    imshow("low_pass_before_idft", filterMask);
+    //imshow("low_pass_before_idft", filterMask);
 
     Mat filterValues;
-    idft(filterMask, filterValues, DFT_SCALE, img.rows);
+    idft(filterMask, filterValues, DFT_REAL_OUTPUT+DFT_SCALE, img.rows);
     normalize(filterValues, filterValues, 0, 1, CV_MINMAX);
     filterValues.convertTo(filterValues, CV_8U, 255, 0);
     return Filter(name, type, filterValues);
@@ -79,14 +79,14 @@ Filter FilterLoader::GetHighPass(string name, string type, int radius, Mat img)
     optimalSize.width = img.cols; //cv::getOptimalDFTSize(img.cols);
     optimalSize.height = img.rows; //cv::getOptimalDFTSize(img.rows);
 
-    Mat filterSpec = Mat::ones(Size(optimalSize.width, optimalSize.height), CV_32FC1);
+    Mat filterSpec = Mat::ones(Size(optimalSize.width, optimalSize.height), CV_32FC2);
     Rect centerRect(static_cast<int>((optimalSize.width / 2) - radius), static_cast<int>((optimalSize.height / 2) - radius), radius * 2, radius * 2);
-    Mat filterMask(filterSpec.rows, filterSpec.cols, CV_32FC1, cv::Scalar(1.0f, 1.0f));
+    Mat filterMask(filterSpec.rows, filterSpec.cols, CV_32FC2, cv::Scalar(1.0f, 1.0f));
     filterMask(centerRect).setTo(Scalar(0.0f, 0.0f));
-    imshow("high_pass_before_idft", filterMask);
+    //imshow("high_pass_before_idft", filterMask);
 
     Mat filterValues;
-    idft(filterMask, filterValues, DFT_SCALE, img.rows);
+    idft(filterMask, filterValues, DFT_REAL_OUTPUT+DFT_SCALE, img.rows);
     normalize(filterValues, filterValues, 0, 1, CV_MINMAX);
     filterValues.convertTo(filterValues, CV_8U, 255, 0);
     return Filter(name, type, filterValues);
