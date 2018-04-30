@@ -31,6 +31,8 @@ class FilterLoader
   private:
     std::map<std::string, Filter> filters;
     std::vector<std::string> filtersInsertOrder;
+
+    void rearrangeSpectrum(cv::Mat& s);
 };
 
 #endif

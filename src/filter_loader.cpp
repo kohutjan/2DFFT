@@ -58,17 +58,28 @@ Filter FilterLoader::GetLowPass(string name, string type, int radius, Mat img)
     optimalSize.width = img.cols; //cv::getOptimalDFTSize(img.cols);
     optimalSize.height = img.rows; //cv::getOptimalDFTSize(img.rows);
 
-    Mat filterSpec = Mat::zeros(Size(optimalSize.width, optimalSize.height), CV_32FC1);
     Rect centerRect(static_cast<int>((optimalSize.width / 2) - radius), static_cast<int>((optimalSize.height / 2) - radius), radius * 2, radius * 2);
-    Mat filterMask(filterSpec.rows, filterSpec.cols, CV_32FC1, cv::Scalar(0.0f, 0.0f));
+    Mat filterMask = Mat::zeros(Size(optimalSize.width, optimalSize.height), CV_32FC2);
     filterMask(centerRect).setTo(Scalar(1.0f, 1.0f));
-    imshow("low_pass_before_idft", filterMask);
+
+    this->rearrangeSpectrum(filterMask);
+
+    Mat complexValuesBeforeIdft[2];
+    split(filterMask, complexValuesBeforeIdft);
+    imshow("low_pass_before_idft", complexValuesBeforeIdft[0]);
 
     Mat filterValues;
-    idft(filterMask, filterValues, DFT_SCALE, img.rows);
-    normalize(filterValues, filterValues, 0, 1, CV_MINMAX);
-    filterValues.convertTo(filterValues, CV_8U, 255, 0);
-    return Filter(name, type, filterValues);
+    idft(filterMask, filterValues, DFT_COMPLEX_OUTPUT+DFT_SCALE, img.rows);
+    //normalize(filterValues, filterValues, 0, 1, CV_MINMAX);
+
+    Mat complexValues[2];
+    split(filterValues, complexValues);
+    Mat realValues = complexValues[0];
+
+    //realValues.convertTo(realValues, CV_8U, 255, 0);
+    this->rearrangeSpectrum(realValues);
+
+    return Filter(name, type, realValues);
 }
 
 Filter FilterLoader::GetHighPass(string name, string type, int radius, Mat img)
@@ -79,17 +90,28 @@ Filter FilterLoader::GetHighPass(string name, string type, int radius, Mat img)
     optimalSize.width = img.cols; //cv::getOptimalDFTSize(img.cols);
     optimalSize.height = img.rows; //cv::getOptimalDFTSize(img.rows);
 
-    Mat filterSpec = Mat::ones(Size(optimalSize.width, optimalSize.height), CV_32FC1);
     Rect centerRect(static_cast<int>((optimalSize.width / 2) - radius), static_cast<int>((optimalSize.height / 2) - radius), radius * 2, radius * 2);
-    Mat filterMask(filterSpec.rows, filterSpec.cols, CV_32FC1, cv::Scalar(1.0f, 1.0f));
+    Mat filterMask = Mat::ones(Size(optimalSize.width, optimalSize.height), CV_32FC2);
     filterMask(centerRect).setTo(Scalar(0.0f, 0.0f));
-    imshow("high_pass_before_idft", filterMask);
+
+    this->rearrangeSpectrum(filterMask);
+
+    Mat complexValuesBeforeIdft[2];
+    split(filterMask, complexValuesBeforeIdft);
+    imshow("high_pass_before_idft", complexValuesBeforeIdft[0]);
 
     Mat filterValues;
-    idft(filterMask, filterValues, DFT_SCALE, img.rows);
-    normalize(filterValues, filterValues, 0, 1, CV_MINMAX);
-    filterValues.convertTo(filterValues, CV_8U, 255, 0);
-    return Filter(name, type, filterValues);
+    idft(filterMask, filterValues, DFT_COMPLEX_OUTPUT+DFT_SCALE, img.rows);
+    //normalize(filterValues, filterValues, 0, 1, CV_MINMAX);
+
+    Mat complexValues[2];
+    split(filterValues, complexValues);
+    Mat realValues = complexValues[0];
+
+    //realValues.convertTo(realValues, CV_8U, 255, 0);
+    this->rearrangeSpectrum(realValues);
+
+    return Filter(name, type, realValues);
 }
 
 bool FilterLoader::Load(string filtersFilePath)
@@ -200,4 +222,24 @@ void FilterLoader::PrintFilter(Filter filter)
     }
   }
   cout << endl;
+}
+
+void FilterLoader::rearrangeSpectrum( Mat& s )
+{
+    int cx = s.cols/2;
+    int cy = s.rows/2;
+
+    Mat q0(s, Rect(0, 0, cx, cy));   // Top-Left - Create a ROI per quadrant
+    Mat q1(s, Rect(cx, 0, cx, cy));  // Top-Right
+    Mat q2(s, Rect(0, cy, cx, cy));  // Bottom-Left
+    Mat q3(s, Rect(cx, cy, cx, cy)); // Bottom-Right
+
+    Mat tmp;                           // swap quadrants (Top-Left with Bottom-Right)
+    q0.copyTo(tmp);
+    q3.copyTo(q0);
+    tmp.copyTo(q3);
+
+    q1.copyTo(tmp);                    // swap quadrant (Top-Right with Bottom-Left)
+    q2.copyTo(q1);
+    tmp.copyTo(q2);
 }
