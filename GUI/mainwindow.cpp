@@ -135,6 +135,7 @@ void MainWindow::playSetFilter()
         int radius = 15;   //ui->playRadiusSpin->value();
         Filter filter = this->filterLoader.GetSpecFilter(filterSpecType, filterSpecType, radius, this->playInputImg);
         this->playFilter = filter.getValues();
+        /*
         map<string, Filter> filters;
         filters[filterSpecType] = filter;
         vector<string> filtersInsertOrder(1, filterSpecType);
@@ -145,6 +146,7 @@ void MainWindow::playSetFilter()
         run.setFilters(filters, filtersInsertOrder);
         run.InitFilterStatistics();
         run.Start(true);
+        */
     }
 
 }
@@ -254,9 +256,22 @@ void MainWindow::on_playForward_clicked()
     Mat outputSpectrumImg = this->GetSpectrumImg(dst);
     this->SetImgToLabel(ui->playSpecOutput, outputSpectrumImg);
     // Measure times
-    string filterType = ui->play2DFiltersCombo->currentText().toStdString();
-    int kernelSize = ui->playKernelSizeSpin->value();
-    Filter filter = filterLoader.Get2DFilter(filterType, filterType, kernelSize);
+    string filter2DType = ui->play2DFiltersCombo->currentText().toStdString();
+    string filterSpecType = ui->playSpecFiltersCombo->currentText().toStdString();
+    Filter filter;
+    string filterType;
+    if (not filter2DType.empty())
+    {
+        int kernelSize = ui->playKernelSizeSpin->value();
+        filter = filterLoader.Get2DFilter(filter2DType, filter2DType, kernelSize);
+        filterType = filter2DType;
+    }
+    if (not filterSpecType.empty())
+    {
+        int radius = 15;
+        filter = this->filterLoader.GetSpecFilter(filterSpecType, filterSpecType, radius, this->playInputImg);
+        filterType = filterSpecType;
+    }
     map<string, Filter> filters;
     filters[filterType] = filter;
     vector<string> filtersInsertOrder(1, filterType);

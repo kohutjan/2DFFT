@@ -66,7 +66,7 @@ Filter FilterLoader::GetLowPass(string name, string type, int radius, Mat img)
 
     Mat complexValuesBeforeIdft[2];
     split(filterMask, complexValuesBeforeIdft);
-    imshow("low_pass_before_idft", complexValuesBeforeIdft[0]);
+    //imshow("low_pass_before_idft", complexValuesBeforeIdft[0]);
 
     Mat filterValues;
     idft(filterMask, filterValues, DFT_COMPLEX_OUTPUT+DFT_SCALE, img.rows);
@@ -98,7 +98,7 @@ Filter FilterLoader::GetHighPass(string name, string type, int radius, Mat img)
 
     Mat complexValuesBeforeIdft[2];
     split(filterMask, complexValuesBeforeIdft);
-    imshow("high_pass_before_idft", complexValuesBeforeIdft[0]);
+    //imshow("high_pass_before_idft", complexValuesBeforeIdft[0]);
 
     Mat filterValues;
     idft(filterMask, filterValues, DFT_COMPLEX_OUTPUT+DFT_SCALE, img.rows);
