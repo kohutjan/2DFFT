@@ -133,9 +133,9 @@ void MainWindow::playSetFilter()
     if (not filterSpecType.empty())
     {
         int radius = 15;   //ui->playRadiusSpin->value();
-        //Filter filter = this->filterLoader.GetSpecFilter(filterSpecType, filterSpecType, radius, this->playInputImg);
-        this->playFilter = this->filterLoader.GetSpecFilter(filterSpecType, filterSpecType, radius, this->playInputImg).getValues();
-        /*map<string, Filter> filters;
+        Filter filter = this->filterLoader.GetSpecFilter(filterSpecType, filterSpecType, radius, this->playInputImg);
+        this->playFilter = filter.getValues();
+        map<string, Filter> filters;
         filters[filterSpecType] = filter;
         vector<string> filtersInsertOrder(1, filterSpecType);
         Run run;
@@ -144,7 +144,7 @@ void MainWindow::playSetFilter()
         run.AddImagePath(this->playInputPath);
         run.setFilters(filters, filtersInsertOrder);
         run.InitFilterStatistics();
-        run.Start(true);*/
+        run.Start(true);
     }
 
 }
