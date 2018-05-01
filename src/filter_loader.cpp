@@ -60,7 +60,7 @@ Filter FilterLoader::GetLowPass(string name, string type, int radius, Mat img)
 
     Rect centerRect(static_cast<int>((optimalSize.width / 2) - radius), static_cast<int>((optimalSize.height / 2) - radius), radius * 2, radius * 2);
     Mat filterMask = Mat::zeros(Size(optimalSize.width, optimalSize.height), CV_32FC2);
-    filterMask(centerRect).setTo(Scalar(1.0f, 1.0f));
+    filterMask(centerRect).setTo(Scalar(1.0f, 0.0f));
 
     this->rearrangeSpectrum(filterMask);
 
@@ -76,9 +76,10 @@ Filter FilterLoader::GetLowPass(string name, string type, int radius, Mat img)
     split(filterValues, complexValues);
     Mat realValues = complexValues[0];
 
+    //realValues = complexValues[0](centerRect);
+
     //realValues.convertTo(realValues, CV_8U, 255, 0);
     this->rearrangeSpectrum(realValues);
-
     return Filter(name, type, realValues);
 }
 
@@ -91,7 +92,8 @@ Filter FilterLoader::GetHighPass(string name, string type, int radius, Mat img)
     optimalSize.height = img.rows; //cv::getOptimalDFTSize(img.rows);
 
     Rect centerRect(static_cast<int>((optimalSize.width / 2) - radius), static_cast<int>((optimalSize.height / 2) - radius), radius * 2, radius * 2);
-    Mat filterMask = Mat::ones(Size(optimalSize.width, optimalSize.height), CV_32FC2);
+    Mat filterMask(Size(optimalSize.width, optimalSize.height), CV_32FC2); // = Mat::ones(Size(optimalSize.width, optimalSize.height), CV_32FC2);
+    filterMask.setTo(Scalar(1.0f, 0.0f));
     filterMask(centerRect).setTo(Scalar(0.0f, 0.0f));
 
     this->rearrangeSpectrum(filterMask);

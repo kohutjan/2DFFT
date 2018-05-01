@@ -253,7 +253,7 @@ void MainWindow::on_playForward_clicked()
     // Show ouptut
     this->SetImgToLabel(ui->play2DOutput, dst);
     // Create spectrum of output and show it
-    Mat outputSpectrumImg = this->GetSpectrumImg(dst);
+    Mat outputSpectrumImg = this->GetSpectrumImg(dstF);
     this->SetImgToLabel(ui->playSpecOutput, outputSpectrumImg);
     // Measure times
     string filter2DType = ui->play2DFiltersCombo->currentText().toStdString();
