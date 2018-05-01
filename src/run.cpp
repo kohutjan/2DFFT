@@ -27,13 +27,13 @@ bool Run::Start(bool show)
       if (this->spatial)
       {
         //Prepare spatial convolution
-        Mat flipedFilter = this->filters[filterName].getValues().clone();
+       // Mat flipedFilter = this->filters[filterName].getValues().clone();
         //flip(this->filters[filterName].getValues(), flipedFilter, -1);
         Mat srcF;
         Mat dstF;
         src.convertTo(srcF, CV_32FC1);
         dst.convertTo(dstF, CV_32FC1);
-        spatialConvolution.setData(srcF, dstF, flipedFilter);
+        spatialConvolution.setData(srcF, dstF, this->filters[filterName].getValues());
 
         //Measure time
         chrono::duration<double, std::milli> duration = std::chrono::milliseconds::zero();
@@ -57,7 +57,7 @@ bool Run::Start(bool show)
       if (this->separable)
       {
         Mat kernelX, kernelY;
-        if (isSeparable(this->filters[filterName].getValues(), kernelY, kernelX))
+        if (isSeparable(this->filters[filterName].getValues(), kernelX, kernelY))
         {
           Mat srcF;
           Mat dstF;
@@ -69,8 +69,8 @@ bool Run::Start(bool show)
           for (int i = 0; i < this->iterations; ++i)
           {
             auto beginSeparable = chrono::high_resolution_clock::now();
-            spatialConvolution.Separable();
-            //spatialConvolution.OpenCVSeparable();
+            //spatialConvolution.Separable();
+            spatialConvolution.OpenCVSeparable();
             auto endSeparable = chrono::high_resolution_clock::now();
             duration += endSeparable - beginSeparable;
           }
@@ -336,8 +336,8 @@ bool Run::isSeparable(Mat kernel, Mat &kernelX, Mat &kernelY)
     u.col(0).copyTo(first_col_of_U.col(0));
     vt.row(0).copyTo(first_row_of_VT.row(0));
     first_col_of_U *= sigma.at<float>(0,0);
-    kernelX = first_col_of_U;
-    kernelY = first_row_of_VT;
+    kernelX = first_row_of_VT;
+    kernelY = first_col_of_U;
     return true;
   }
   else { //non-separable

@@ -4,9 +4,9 @@ using namespace cv;
 
 void SpatialConvolution::Regular()
 {
-    for(int row = this->filter.rows / 2; row < this->src.rows - (this->filter.rows / 2); ++row)
+    for(int row = (this->filter.rows / 2); row < this->src.rows - (this->filter.rows / 2); ++row)
 	{
-        for(int col = this->filter.cols / 2; col < this->src.cols - (this->filter.cols / 2); ++col)
+        for(int col = (this->filter.cols / 2); col < this->src.cols - (this->filter.cols / 2); ++col)
 		{
             float convolutionSum = 0;
             for (int rowk = -(this->filter.rows / 2); rowk <= (this->filter.rows / 2); ++rowk)
