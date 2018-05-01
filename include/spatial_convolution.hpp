@@ -10,6 +10,7 @@ class SpatialConvolution : public Convolution
     void Regular();
     void OpenCVRegular();
     void Separable();
+    void OpenCVSeparable();
     using Convolution::setData;
     void setData(cv::Mat _src, cv::Mat _dst, cv::Mat _kernelX, cv::Mat _kernelY)
     {

@@ -28,7 +28,7 @@ bool Run::Start(bool show)
       {
         //Prepare spatial convolution
         Mat flipedFilter = this->filters[filterName].getValues().clone();
-        flip(this->filters[filterName].getValues(), flipedFilter, -1);
+        //flip(this->filters[filterName].getValues(), flipedFilter, -1);
         Mat srcF;
         Mat dstF;
         src.convertTo(srcF, CV_32FC1);
@@ -57,9 +57,7 @@ bool Run::Start(bool show)
       if (this->separable)
       {
         Mat kernelX, kernelY;
-        Mat flipedFilter = this->filters[filterName].getValues().clone();
-        flip(this->filters[filterName].getValues(), flipedFilter, -1);
-        if (isSeparable(flipedFilter, kernelX, kernelY))
+        if (isSeparable(this->filters[filterName].getValues(), kernelY, kernelX))
         {
           spatialConvolution.setData(src, dst, kernelX, kernelY);
 
@@ -68,6 +66,7 @@ bool Run::Start(bool show)
           {
             auto beginSeparable = chrono::high_resolution_clock::now();
             spatialConvolution.Separable();
+            //spatialConvolution.OpenCVSeparable();
             auto endSeparable = chrono::high_resolution_clock::now();
             duration += endSeparable - beginSeparable;
           }
