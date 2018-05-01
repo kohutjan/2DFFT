@@ -46,52 +46,37 @@ Filter FilterLoader::GetGauss(string name, string type, int kernelSize, float si
 
 Filter FilterLoader::GetLowPass(string name, string type, int radius, Mat img)
 {
-    Size optimalSize;
-
-    optimalSize.width = img.cols;
-    optimalSize.height = img.rows;
-
-    Rect centerRect(static_cast<int>((optimalSize.width / 2) - radius), static_cast<int>((optimalSize.height / 2) - radius), radius * 2, radius * 2);
-    Mat filterMask = Mat::zeros(Size(optimalSize.width, optimalSize.height), CV_32FC2);
-    filterMask(centerRect).setTo(Scalar(1.0f, 0.0f));
-
-    this->rearrangeSpectrum(filterMask);
-
+    Mat filterMask = Mat::zeros(Size(img.cols, img.rows), CV_32FC1);
+    circle(filterMask, Point(img.cols / 2, img.rows / 2), radius, 1, -1);
+    Mat imgZeros = Mat::zeros(Size(img.cols, img.rows), CV_32FC1);
+    vector<Mat> complexFilterVec;
+    complexFilterVec.push_back(filterMask);
+    complexFilterVec.push_back(imgZeros);
+    Mat complexFilter;
+    merge(complexFilterVec, complexFilter);
+    this->rearrangeSpectrum(complexFilter);
     Mat filterValues;
-    idft(filterMask, filterValues, DFT_COMPLEX_OUTPUT+DFT_SCALE, img.rows);
+    dft(complexFilter, filterValues, DFT_REAL_OUTPUT | DFT_SCALE | DFT_INVERSE);
+    this->rearrangeSpectrum(filterValues);
+    return Filter(name, type, filterValues);
 
-    Mat complexValues[2];
-    split(filterValues, complexValues);
-    Mat realValues = complexValues[0];
-
-    this->rearrangeSpectrum(realValues);
-    return Filter(name, type, realValues);
 }
 
 Filter FilterLoader::GetHighPass(string name, string type, int radius, Mat img)
 {
-    Size optimalSize;
-
-    optimalSize.width = img.cols;
-    optimalSize.height = img.rows;
-
-    Rect centerRect(static_cast<int>((optimalSize.width / 2) - radius), static_cast<int>((optimalSize.height / 2) - radius), radius * 2, radius * 2);
-    Mat filterMask(Size(optimalSize.width, optimalSize.height), CV_32FC2); // = Mat::ones(Size(optimalSize.width, optimalSize.height), CV_32FC2);
-    filterMask.setTo(Scalar(1.0f, 0.0f));
-    filterMask(centerRect).setTo(Scalar(0.0f, 0.0f));
-
-    this->rearrangeSpectrum(filterMask);
-
+    Mat filterMask = Mat::ones(Size(img.cols, img.rows), CV_32FC1);
+    circle(filterMask, Point(img.cols / 2, img.rows / 2), radius, 0, -1);
+    Mat imgZeros = Mat::zeros(Size(img.cols, img.rows), CV_32FC1);
+    vector<Mat> complexFilterVec;
+    complexFilterVec.push_back(filterMask);
+    complexFilterVec.push_back(imgZeros);
+    Mat complexFilter;
+    merge(complexFilterVec, complexFilter);
+    this->rearrangeSpectrum(complexFilter);
     Mat filterValues;
-    idft(filterMask, filterValues, DFT_COMPLEX_OUTPUT+DFT_SCALE, img.rows);
-
-    Mat complexValues[2];
-    split(filterValues, complexValues);
-    Mat realValues = complexValues[0];
-
-    this->rearrangeSpectrum(realValues);
-
-    return Filter(name, type, realValues);
+    dft(complexFilter, filterValues, DFT_REAL_OUTPUT | DFT_SCALE | DFT_INVERSE);
+    this->rearrangeSpectrum(filterValues);
+    return Filter(name, type, filterValues);
 }
 
 bool FilterLoader::Load(string filtersFilePath)

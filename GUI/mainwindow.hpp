@@ -32,7 +32,6 @@ private slots:
     void on_ana_static_sig_rad_clicked();
     void on_ana_dynamic_sig_rad_clicked();
     void on_playForward_clicked();
-
     void on_playSpecFiltersCombo_currentIndexChanged(const QString &arg1);
 
 private:
@@ -43,6 +42,7 @@ private:
     void play2DFilterParamsChanged();
     void playSpecFilterParamsChanged();
     void playKernelSizeSelection();
+    void playRadiusSelection();
     std::string playInputPath;
     cv::Mat playInputImg;
     cv::Mat playFilter;
