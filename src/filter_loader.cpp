@@ -59,6 +59,7 @@ Filter FilterLoader::GetLowPass(string name, string type, int radius, Mat img)
     dft(complexFilter, filterValues, DFT_REAL_OUTPUT | DFT_SCALE | DFT_INVERSE);
     this->rearrangeSpectrum(filterValues);
     return Filter(name, type, filterValues);
+
 }
 
 Filter FilterLoader::GetHighPass(string name, string type, int radius, Mat img)
