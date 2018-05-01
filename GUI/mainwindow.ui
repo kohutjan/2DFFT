@@ -24,7 +24,7 @@
        <attribute name="title">
         <string>Playground</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_2" rowstretch="6,1" columnstretch="17,2">
+       <layout class="QGridLayout" name="gridLayout_2" rowstretch="6,1" columnstretch="17,1">
         <property name="leftMargin">
          <number>6</number>
         </property>
@@ -108,6 +108,21 @@
               <string>Gaussian</string>
              </property>
             </item>
+            <item>
+             <property name="text">
+              <string>SobelX</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>SobelY</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>DoG</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item>
@@ -162,6 +177,16 @@
             <item>
              <property name="text">
               <string>High-pass</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Low-gauss</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>High-gauss</string>
              </property>
             </item>
            </widget>
@@ -788,27 +813,56 @@
          </layout>
         </item>
         <item row="1" column="0" colspan="2">
-         <layout class="QVBoxLayout" name="timing" stretch="1,1,1">
+         <layout class="QHBoxLayout" name="timing">
           <item>
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>TextLabel</string>
+           <layout class="QVBoxLayout" name="info">
+            <property name="topMargin">
+             <number>6</number>
             </property>
-           </widget>
+            <item>
+             <widget class="QLabel" name="play2DTime">
+              <property name="styleSheet">
+               <string notr="true">color: #0e6306; font: bold 12pt; </string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="playSpecTime">
+              <property name="styleSheet">
+               <string notr="true">color: #7a0202; font: bold 12pt</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="playSeparableTime">
+              <property name="styleSheet">
+               <string notr="true">color: #ff912b; font: bold 12pt</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item>
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>TextLabel</string>
+           <spacer name="horizontalSpacer_7">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>TextLabel</string>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
             </property>
-           </widget>
+           </spacer>
           </item>
          </layout>
         </item>
