@@ -243,7 +243,8 @@ void MainWindow::on_playForward_clicked()
     dst.convertTo(dstF, CV_32FC1);
     spatialConvolution.setData(srcF, dstF, flipedFilter);
     spatialConvolution.OpenCVRegular();
-    dstF.convertTo(dst, CV_8UC1);
+    normalize(dstF, dstF, 0, 1, CV_MINMAX);
+    dstF.convertTo(dst, CV_8UC1, 255);
     // Show ouptut
     this->SetImgToLabel(ui->play2DOutput, dst);
     // Create spectrum of output and show it
@@ -270,7 +271,7 @@ void MainWindow::on_playForward_clicked()
     filters[filterType] = filter;
     vector<string> filtersInsertOrder(1, filterType);
     Run run;
-    run.SetConvolutions(true, false, true);
+    run.SetConvolutions(true, true, true);
     run.SetIterations(1);
     run.AddImagePath(this->playInputPath);
     run.setFilters(filters, filtersInsertOrder);
@@ -282,12 +283,25 @@ void MainWindow::on_playForward_clicked()
     double FFTFilterDuration = statistic.FFTFilterDurations[this->playInputPath].count();
     double MULDuration = statistic.MULDurations[this->playInputPath].count();
     double IFFTDuration = statistic.IFFTDurations[this->playInputPath].count();
+    double FFTDuration = statistic.frequentialDurations[this->playInputPath].count();
+    QString separableDuration;
+    if (not statistic.separableDurations.empty())
+    {
+        separableDuration = QString::number(statistic.separableDurations[this->playInputPath].count());
+    }
+    else
+    {
+        separableDuration = "inseparable";
+    }
     // Show measured times
     ui->play2DInputFilterTime->setText(QString::number(spatialDuration, 'g', 3));
     ui->play2DInputSpecInputTime->setText(QString::number(FFTImgDuration, 'g', 3));
     ui->play2DFilterSpecFilterTime->setText(QString::number(FFTFilterDuration, 'g', 3));
     ui->playSpecInputFilterTime->setText(QString::number(MULDuration, 'g', 3));
     ui->play2DOutputSpecOutputTime->setText(QString::number(IFFTDuration, 'g', 3));
+    ui->play2DTime->setText("Spatial domain: " + QString::number(spatialDuration, 'g', 6));
+    ui->playSpecTime->setText("Frequential domain: " + QString::number(FFTDuration, 'g', 6));
+    ui->playSeparableTime->setText("Spatial domain (separable): " + separableDuration);
 }
 
 // --- Playground end ---

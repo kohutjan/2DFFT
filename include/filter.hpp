@@ -10,7 +10,7 @@
 class Filter
 {
   public:
-    Filter(){};
+    Filter(){}
     Filter(std::string _name, std::string _type, cv::Mat _values) :
            name(_name), type(_type), values(_values){}
     std::string getName() const { return name; }
