@@ -13,17 +13,20 @@ void SpatialConvolution::Regular()
 
     for(int row = (this->filter.rows / 2); row < paddedSrc.rows - (this->filter.rows / 2); ++row)
     {
+        float* rowPtrDst = paddedDst.ptr<float>(row);
         for(int col = (this->filter.cols / 2); col < paddedSrc.cols - (this->filter.cols / 2); ++col)
         {
             float convolutionSum = 0;
             for (int rowk = -(this->filter.rows / 2); rowk <= (this->filter.rows / 2); ++rowk)
             {
+                const float* rowPtrSrc = paddedSrc.ptr<float>(row + rowk);
+                const float* rowPtrFilter = this->filter.ptr<float>(rowk + (this->filter.rows / 2));
                 for (int colk = -(this->filter.cols / 2); colk <= (this->filter.cols / 2); ++colk)
                 {
-                    convolutionSum += paddedSrc.at<float>(row + rowk, col + colk) * this->filter.at<float>(rowk + (this->filter.rows / 2), colk + (this->filter.cols / 2));
+                    convolutionSum += rowPtrSrc[col + colk] * rowPtrFilter[colk + (this->filter.cols / 2)];
                 }
             }
-            paddedDst.at<float>(row, col) = convolutionSum;
+            rowPtrDst[col] = convolutionSum;
         }
     }
 
@@ -40,16 +43,19 @@ void SpatialConvolution::Separable()
     Mat paddedDst(paddedSize, this->dst.type());
     this->src.copyTo(paddedSrc(Rect(this->kernelX.cols/2, this->kernelY.rows/2, this->src.cols, this->src.rows)));
 
+    const float* rowPtrFilter = this->kernelX.ptr<float>(0);
     for(int row = (this->kernelY.rows / 2); row < paddedSrc.rows - (this->kernelY.rows / 2); ++row)
     {
+        float* rowPtrDst = paddedDst.ptr<float>(row);
+        const float* rowPtrSrc = paddedSrc.ptr<float>(row);
         for(int col = (this->kernelX.cols / 2); col < paddedSrc.cols - (this->kernelX.cols / 2); ++col)
         {
             float convolutionSum = 0;
             for (int colk = -(this->kernelX.cols / 2); colk <= (this->kernelX.cols / 2); ++colk)
             {
-                convolutionSum += paddedSrc.at<float>(row, col + colk) * this->kernelX.at<float>(0, colk + (this->kernelX.cols / 2));
+                convolutionSum += rowPtrSrc[col + colk] * rowPtrFilter[colk + (this->kernelX.cols / 2)];
             }
-            paddedDst.at<float>(row, col) = convolutionSum;
+            rowPtrDst[col] = convolutionSum;
         }
     }
 
@@ -60,11 +66,14 @@ void SpatialConvolution::Separable()
         for(int row = (this->kernelY.rows / 2); row < paddedSrc.rows - (this->kernelY.rows / 2); ++row)
         {
             float convolutionSum = 0;
+            float* rowPtrDst = paddedDst.ptr<float>(row);
             for (int rowk = -(this->kernelY.rows / 2); rowk <= (this->kernelY.rows / 2); ++rowk)
             {
-                convolutionSum += paddedSrc.at<float>(row + rowk, col) * this->kernelY.at<float>(rowk + (this->kernelY.rows / 2), 0);
+                const float* rowPtrSrc = paddedSrc.ptr<float>(row + rowk);
+                const float* rowPtrFilter = this->kernelY.ptr<float>(rowk + (this->kernelY.rows / 2));
+                convolutionSum += rowPtrSrc[col] * rowPtrFilter[0];
             }
-            paddedDst.at<float>(row, col) = convolutionSum;
+            rowPtrDst[col] = convolutionSum;
         }
     }
 
