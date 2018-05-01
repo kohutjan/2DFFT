@@ -46,17 +46,10 @@ Filter FilterLoader::GetGauss(string name, string type, int kernelSize, float si
 
 Filter FilterLoader::GetLowPass(string name, string type, int radius, Mat img)
 {
-    /*int topLeftRow = img.rows / 2 - radius;
-    int topLeftCol = img.cols / 2 - radius;
-    Mat filterSpec = Mat::zeros(Size(img.cols, img.rows), CV_32FC2);
-    filterSpec.setTo(1.0);
-    Mat square = filterSpec(Rect(Point(topLeftCol, topLeftRow), Point(topLeftCol + radius, topLeftRow + radius)));
-    square.setTo(0.0);*/
     Size optimalSize;
 
-    // velikost podle obrazku nebo optimalni velikosti obrazku? davaji rozdilne vysledky...
-    optimalSize.width = img.cols; //cv::getOptimalDFTSize(img.cols);
-    optimalSize.height = img.rows; //cv::getOptimalDFTSize(img.rows);
+    optimalSize.width = img.cols;
+    optimalSize.height = img.rows;
 
     Rect centerRect(static_cast<int>((optimalSize.width / 2) - radius), static_cast<int>((optimalSize.height / 2) - radius), radius * 2, radius * 2);
     Mat filterMask = Mat::zeros(Size(optimalSize.width, optimalSize.height), CV_32FC2);
@@ -64,21 +57,13 @@ Filter FilterLoader::GetLowPass(string name, string type, int radius, Mat img)
 
     this->rearrangeSpectrum(filterMask);
 
-    Mat complexValuesBeforeIdft[2];
-    split(filterMask, complexValuesBeforeIdft);
-    //imshow("low_pass_before_idft", complexValuesBeforeIdft[0]);
-
     Mat filterValues;
     idft(filterMask, filterValues, DFT_COMPLEX_OUTPUT+DFT_SCALE, img.rows);
-    //normalize(filterValues, filterValues, 0, 1, CV_MINMAX);
 
     Mat complexValues[2];
     split(filterValues, complexValues);
     Mat realValues = complexValues[0];
 
-    //realValues = complexValues[0](centerRect);
-
-    //realValues.convertTo(realValues, CV_8U, 255, 0);
     this->rearrangeSpectrum(realValues);
     return Filter(name, type, realValues);
 }
@@ -87,9 +72,8 @@ Filter FilterLoader::GetHighPass(string name, string type, int radius, Mat img)
 {
     Size optimalSize;
 
-    // velikost podle obrazku nebo optimalni velikosti obrazku? davaji rozdilne vysledky...
-    optimalSize.width = img.cols; //cv::getOptimalDFTSize(img.cols);
-    optimalSize.height = img.rows; //cv::getOptimalDFTSize(img.rows);
+    optimalSize.width = img.cols;
+    optimalSize.height = img.rows;
 
     Rect centerRect(static_cast<int>((optimalSize.width / 2) - radius), static_cast<int>((optimalSize.height / 2) - radius), radius * 2, radius * 2);
     Mat filterMask(Size(optimalSize.width, optimalSize.height), CV_32FC2); // = Mat::ones(Size(optimalSize.width, optimalSize.height), CV_32FC2);
@@ -98,19 +82,13 @@ Filter FilterLoader::GetHighPass(string name, string type, int radius, Mat img)
 
     this->rearrangeSpectrum(filterMask);
 
-    Mat complexValuesBeforeIdft[2];
-    split(filterMask, complexValuesBeforeIdft);
-    //imshow("high_pass_before_idft", complexValuesBeforeIdft[0]);
-
     Mat filterValues;
     idft(filterMask, filterValues, DFT_COMPLEX_OUTPUT+DFT_SCALE, img.rows);
-    //normalize(filterValues, filterValues, 0, 1, CV_MINMAX);
 
     Mat complexValues[2];
     split(filterValues, complexValues);
     Mat realValues = complexValues[0];
 
-    //realValues.convertTo(realValues, CV_8U, 255, 0);
     this->rearrangeSpectrum(realValues);
 
     return Filter(name, type, realValues);
