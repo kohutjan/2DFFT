@@ -59,7 +59,11 @@ bool Run::Start(bool show)
         Mat kernelX, kernelY;
         if (isSeparable(this->filters[filterName].getValues(), kernelY, kernelX))
         {
-          spatialConvolution.setData(src, dst, kernelX, kernelY);
+          Mat srcF;
+          Mat dstF;
+          src.convertTo(srcF, CV_32FC1);
+          dst.convertTo(dstF, CV_32FC1);
+          spatialConvolution.setData(srcF, dstF, kernelX, kernelY);
 
           chrono::duration<double, std::milli> duration = std::chrono::milliseconds::zero();
           for (int i = 0; i < this->iterations; ++i)
@@ -75,6 +79,7 @@ bool Run::Start(bool show)
 
           if (show)
           {
+            dstF.convertTo(dst, CV_8UC1);
             imshow(filterName + " spatial separable", dst);
           }
         }

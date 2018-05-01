@@ -8,7 +8,7 @@ void SpatialConvolution::Regular()
 	{
         for(int col = this->filter.cols / 2; col < this->src.cols - (this->filter.cols / 2); ++col)
 		{
-			double convolutionSum = 0;
+            float convolutionSum = 0;
             for (int rowk = -(this->filter.rows / 2); rowk <= (this->filter.rows / 2); ++rowk)
 			{
                 for (int colk = -(this->filter.cols / 2); colk <= (this->filter.cols / 2); ++colk)
@@ -28,8 +28,8 @@ void SpatialConvolution::Separable()
     {
         for(int col = (this->kernelX.cols / 2); col < this->src.cols - (this->kernelX.cols / 2); ++col)
         {
-            double convolutionSum = 0;
-            for (int colk = -(this->kernelX.cols / 2); colk <= (this->kernelX.cols / 2) - 1; ++colk)
+            float convolutionSum = 0;
+            for (int colk = -(this->kernelX.cols / 2); colk <= (this->kernelX.cols / 2); ++colk)
             {
                 convolutionSum += this->src.at<float>(row, col + colk) * this->kernelX.at<float>(0, colk + (this->kernelX.cols / 2));
             }
@@ -41,8 +41,8 @@ void SpatialConvolution::Separable()
     {
         for(int row = (this->kernelY.rows / 2); row < this->dst.rows - (this->kernelY.rows / 2); ++row)
         {
-            double convolutionSum = 0;
-            for (int rowk = -(this->kernelY.rows / 2); rowk <= (this->kernelY.rows / 2) - 1; ++rowk)
+            float convolutionSum = 0;
+            for (int rowk = -(this->kernelY.rows / 2); rowk <= (this->kernelY.rows / 2); ++rowk)
             {
                 convolutionSum += this->dst.at<float>(row + rowk, col) * this->kernelY.at<float>(rowk + (this->kernelY.rows / 2), 0);
             }
