@@ -4,22 +4,19 @@ using namespace cv;
 
 void SpatialConvolution::Regular()
 {
-	for(int y = 0; y < this->src.rows - this->filter.cols; ++y)
+    for(int y = this->filter.rows / 2; y < this->src.rows - (this->filter.rows - 2); ++y)
 	{
-		float * dstRowPtr = this->dst.ptr<float>(y + 1);
-		for(int x = 0; x < this->src.cols - this->filter.cols; ++x)
+        for(int x = this->filter.cols / 2; x < this->src.cols - (this->filter.cols - 2); ++x)
 		{
 			double convolutionSum = 0;
-			for (int yk = 0; yk < this->filter.rows; ++yk)
+            for (int yk = -(this->filter.rows / 2); yk < (this->filter.rows / 2); ++yk)
 			{
-				const float * srcRowPtr = this->src.ptr<float>(y + yk);
-				const float * kernelRowPtr = this->src.ptr<float>(yk);
-				for (int xk = 0; xk < this->filter.cols; ++xk)
+                for (int xk = -(this->filter.cols / 2); xk < (this->filter.cols / 2); ++xk)
 				{
-					convolutionSum += ((float) srcRowPtr[x + xk]) * kernelRowPtr[xk];
+                    convolutionSum += this->src.at<float>(y + yk, x + xk) * this->filter.at<float>(yk + (this->filter.rows / 2), xk + (this->filter.cols / 2));
 				}
 			}
-			dstRowPtr[x + 1] = convolutionSum;
+            this->dst.at<float>(y, x) = convolutionSum;
 		}
 	}
   return;

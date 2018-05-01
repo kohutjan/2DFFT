@@ -40,7 +40,8 @@ bool Run::Start(bool show)
         for (int i = 0; i < this->iterations; ++i)
         {
           auto beginSpatial = chrono::high_resolution_clock::now();
-          spatialConvolution.OpenCVRegular();
+          spatialConvolution.Regular();
+          //spatialConvolution.OpenCVRegular();
           auto endSpatial = chrono::high_resolution_clock::now();
           duration += endSpatial - beginSpatial;
         }
