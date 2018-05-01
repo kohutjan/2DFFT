@@ -12,8 +12,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     // --- Playground start ---
-    ui->playFiltersCombo->setEnabled(false);
+    ui->play2DFiltersCombo->setEnabled(false);
     ui->playKernelSizeSpin->setEnabled(false);
+    ui->playSpecFiltersCombo->setEnabled(false);
+    ui->playRadiusSpin->setEnabled(false);
     ui->playForward->setEnabled(false);
     // Set borders
     this->playBorderSize = 5;
@@ -40,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->SetPipeToLabel(ui->play2DFilterSpecFilterPipe, redDown);
     this->SetPipeToLabel(ui->play2DOutputSpecOutputPipe, redUp);
     QObject::connect(ui->playKernelSizeSpin, &QAbstractSpinBox::editingFinished, this, &MainWindow::playKernelSizeSelection);
+    QObject::connect(ui->playRadiusSpin, &QAbstractSpinBox::editingFinished, this, &MainWindow::playRadiusSelection);
     // --- Playground end ---
     
     // --- Analytics start ---
@@ -114,15 +117,27 @@ void MainWindow::on_playLoadImg_clicked()
       this->playInputImg = imread(this->playInputPath, CV_LOAD_IMAGE_GRAYSCALE);
       Mat inputSpectrumImg = this->GetSpectrumImg(this->playInputImg);
       this->SetImgToLabel(ui->playSpecInput, inputSpectrumImg);
-      ui->playFiltersCombo->setEnabled(true);
+      ui->play2DFiltersCombo->setEnabled(true);
+      ui->playSpecFiltersCombo->setEnabled(true);
     }
 }
 
 void MainWindow::playSetFilter()
 {
-    String filterType = ui->playFiltersCombo->currentText().toStdString();
-    int kernelSize = ui->playKernelSizeSpin->value();
-    this->playFilter = this->filterLoader.GetFilter(filterType, filterType, kernelSize).getValues();
+    String filter2DType = ui->play2DFiltersCombo->currentText().toStdString();
+    String filterSpecType = ui->playSpecFiltersCombo->currentText().toStdString();
+    if (not filter2DType.empty())
+    {
+        int kernelSize = ui->playKernelSizeSpin->value();
+        this->playFilter = this->filterLoader.Get2DFilter(filter2DType, filter2DType, kernelSize).getValues();
+    }
+    if (not filterSpecType.empty())
+    {
+        int radius = ui->playRadiusSpin->value();
+        Filter filter = this->filterLoader.GetSpecFilter(filterSpecType, filterSpecType, radius, this->playInputImg);
+        this->playFilter = filter.getValues();
+    }
+
 }
 
 void MainWindow::playShowFilter()
@@ -151,26 +166,52 @@ void MainWindow::playShowFilter()
     ui->play2DFilter->setPixmap(filterPixmap.scaled(scaleFilterW, scaleFilterH, Qt::KeepAspectRatio));
 }
 
-void MainWindow::playFilterParamsChanged()
+void MainWindow::play2DFilterParamsChanged()
 {
-    String filterType = ui->playFiltersCombo->currentText().toStdString();
-    if (not (filterType.empty() || this->playInputPath.empty()))
+    String filterType = ui->play2DFiltersCombo->currentText().toStdString();
+    if (not filterType.empty())
     {
         this->playSetFilter();
         this->playShowFilter();
         ui->playKernelSizeSpin->setEnabled(true);
         ui->playForward->setEnabled(true);
+        ui->playSpecFiltersCombo->setEnabled(false);
     }
     else
     {
         ui->playKernelSizeSpin->setEnabled(false);
         ui->playForward->setEnabled(false);
+        ui->playSpecFiltersCombo->setEnabled(true);
     }
 }
 
-void MainWindow::on_playFiltersCombo_currentIndexChanged(const QString &arg1)
+void MainWindow::on_play2DFiltersCombo_currentIndexChanged(const QString &arg1)
 {
-    this->playFilterParamsChanged();
+    this->play2DFilterParamsChanged();
+}
+
+void MainWindow::playSpecFilterParamsChanged()
+{
+    String filterType = ui->playSpecFiltersCombo->currentText().toStdString();
+    if (not filterType.empty())
+    {
+        this->playSetFilter();
+        this->playShowFilter();
+        ui->playRadiusSpin->setEnabled(true);
+        ui->playForward->setEnabled(true);
+        ui->play2DFiltersCombo->setEnabled(false);
+    }
+    else
+    {
+        ui->playRadiusSpin->setEnabled(false);
+        ui->playForward->setEnabled(false);
+        ui->play2DFiltersCombo->setEnabled(true);
+    }
+}
+
+void MainWindow::on_playSpecFiltersCombo_currentIndexChanged(const QString &arg1)
+{
+    this->playSpecFilterParamsChanged();
 }
 
 void MainWindow::playKernelSizeSelection()
@@ -181,7 +222,12 @@ void MainWindow::playKernelSizeSelection()
         --kernelSize;
         ui->playKernelSizeSpin->setValue(kernelSize);
     }
-    this->playFilterParamsChanged();
+    this->play2DFilterParamsChanged();
+}
+
+void MainWindow::playRadiusSelection()
+{
+    this->playSpecFilterParamsChanged();
 }
 
 void MainWindow::on_playForward_clicked()
@@ -197,21 +243,35 @@ void MainWindow::on_playForward_clicked()
     dst.convertTo(dstF, CV_32FC1);
     spatialConvolution.setData(srcF, dstF, flipedFilter);
     spatialConvolution.OpenCVRegular();
-    dstF.convertTo(dst, CV_8UC1);
+    normalize(dstF, dstF, 0, 1, CV_MINMAX);
+    dstF.convertTo(dst, CV_8UC1, 255);
     // Show ouptut
     this->SetImgToLabel(ui->play2DOutput, dst);
     // Create spectrum of output and show it
     Mat outputSpectrumImg = this->GetSpectrumImg(dst);
     this->SetImgToLabel(ui->playSpecOutput, outputSpectrumImg);
     // Measure times
-    string filterType = ui->playFiltersCombo->currentText().toStdString();
-    int kernelSize = ui->playKernelSizeSpin->value();
-    Filter filter = filterLoader.GetFilter(filterType, filterType, kernelSize);
+    string filter2DType = ui->play2DFiltersCombo->currentText().toStdString();
+    string filterSpecType = ui->playSpecFiltersCombo->currentText().toStdString();
+    Filter filter;
+    string filterType;
+    if (not filter2DType.empty())
+    {
+        int kernelSize = ui->playKernelSizeSpin->value();
+        filter = filterLoader.Get2DFilter(filter2DType, filter2DType, kernelSize);
+        filterType = filter2DType;
+    }
+    if (not filterSpecType.empty())
+    {
+        int radius = ui->playRadiusSpin->value();
+        filter = this->filterLoader.GetSpecFilter(filterSpecType, filterSpecType, radius, this->playInputImg);
+        filterType = filterSpecType;
+    }
     map<string, Filter> filters;
     filters[filterType] = filter;
     vector<string> filtersInsertOrder(1, filterType);
     Run run;
-    run.SetConvolutions(true, false, true);
+    run.SetConvolutions(true, true, true);
     run.SetIterations(1);
     run.AddImagePath(this->playInputPath);
     run.setFilters(filters, filtersInsertOrder);
@@ -223,12 +283,25 @@ void MainWindow::on_playForward_clicked()
     double FFTFilterDuration = statistic.FFTFilterDurations[this->playInputPath].count();
     double MULDuration = statistic.MULDurations[this->playInputPath].count();
     double IFFTDuration = statistic.IFFTDurations[this->playInputPath].count();
+    double FFTDuration = statistic.frequentialDurations[this->playInputPath].count();
+    QString separableDuration;
+    if (not statistic.separableDurations.empty())
+    {
+        separableDuration = QString::number(statistic.separableDurations[this->playInputPath].count());
+    }
+    else
+    {
+        separableDuration = "inseparable";
+    }
     // Show measured times
     ui->play2DInputFilterTime->setText(QString::number(spatialDuration, 'g', 3));
     ui->play2DInputSpecInputTime->setText(QString::number(FFTImgDuration, 'g', 3));
     ui->play2DFilterSpecFilterTime->setText(QString::number(FFTFilterDuration, 'g', 3));
     ui->playSpecInputFilterTime->setText(QString::number(MULDuration, 'g', 3));
     ui->play2DOutputSpecOutputTime->setText(QString::number(IFFTDuration, 'g', 3));
+    ui->play2DTime->setText("Spatial domain: " + QString::number(spatialDuration, 'g', 6));
+    ui->playSpecTime->setText("Frequential domain: " + QString::number(FFTDuration, 'g', 6));
+    ui->playSeparableTime->setText("Spatial domain (separable): " + separableDuration);
 }
 
 // --- Playground end ---

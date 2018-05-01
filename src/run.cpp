@@ -83,7 +83,7 @@ bool Run::Start(bool show)
       {
         // ma to byt flipnute nebo ne? :D
         Mat flipedFilter = this->filters[filterName].getValues().clone();
-        flip(this->filters[filterName].getValues(), flipedFilter, -1);
+        //flip(this->filters[filterName].getValues(), flipedFilter, -1);
         frequencyConvolution.setData(src, dst, flipedFilter);
 
         chrono::duration<double, std::milli> durationFFTImg = std::chrono::milliseconds::zero();
