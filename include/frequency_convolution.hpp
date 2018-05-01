@@ -19,6 +19,10 @@ class FrequencyConvolution : public Convolution
     cv::Mat filterPadded;
     cv::Mat spectrumImgCCS;
     cv::Mat spectrumFilterCCS;
+
+    cv::Mat SpectrumMagnitude(cv::Mat specCplx);
+    void rearrangeSpectrum( cv::Mat& s );
+    cv::Mat GetSpectrumImg(cv::Mat input);
 };
 
 #endif
