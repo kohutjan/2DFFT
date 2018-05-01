@@ -42,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->SetPipeToLabel(ui->play2DFilterSpecFilterPipe, redDown);
     this->SetPipeToLabel(ui->play2DOutputSpecOutputPipe, redUp);
     QObject::connect(ui->playKernelSizeSpin, &QAbstractSpinBox::editingFinished, this, &MainWindow::playKernelSizeSelection);
+    QObject::connect(ui->playRadiusSpin, &QAbstractSpinBox::editingFinished, this, &MainWindow::playRadiusSelection);
     // --- Playground end ---
     
     // --- Analytics start ---
@@ -132,21 +133,9 @@ void MainWindow::playSetFilter()
     }
     if (not filterSpecType.empty())
     {
-        int radius = 15;   //ui->playRadiusSpin->value();
+        int radius = ui->playRadiusSpin->value();
         Filter filter = this->filterLoader.GetSpecFilter(filterSpecType, filterSpecType, radius, this->playInputImg);
         this->playFilter = filter.getValues();
-        /*
-        map<string, Filter> filters;
-        filters[filterSpecType] = filter;
-        vector<string> filtersInsertOrder(1, filterSpecType);
-        Run run;
-        run.SetConvolutions(true, false, true);
-        run.SetIterations(1);
-        run.AddImagePath(this->playInputPath);
-        run.setFilters(filters, filtersInsertOrder);
-        run.InitFilterStatistics();
-        run.Start(true);
-        */
     }
 
 }
@@ -236,6 +225,11 @@ void MainWindow::playKernelSizeSelection()
     this->play2DFilterParamsChanged();
 }
 
+void MainWindow::playRadiusSelection()
+{
+    this->playSpecFilterParamsChanged();
+}
+
 void MainWindow::on_playForward_clicked()
 {
     // Prepare spatial convolution
@@ -253,7 +247,7 @@ void MainWindow::on_playForward_clicked()
     // Show ouptut
     this->SetImgToLabel(ui->play2DOutput, dst);
     // Create spectrum of output and show it
-    Mat outputSpectrumImg = this->GetSpectrumImg(dstF);
+    Mat outputSpectrumImg = this->GetSpectrumImg(dst);
     this->SetImgToLabel(ui->playSpecOutput, outputSpectrumImg);
     // Measure times
     string filter2DType = ui->play2DFiltersCombo->currentText().toStdString();
@@ -268,7 +262,7 @@ void MainWindow::on_playForward_clicked()
     }
     if (not filterSpecType.empty())
     {
-        int radius = 15;
+        int radius = ui->playRadiusSpin->value();
         filter = this->filterLoader.GetSpecFilter(filterSpecType, filterSpecType, radius, this->playInputImg);
         filterType = filterSpecType;
     }

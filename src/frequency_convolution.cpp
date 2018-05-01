@@ -76,9 +76,5 @@ void FrequencyConvolution::IFFT()
     cv::idft(this->spectrumImgCCS, this->srcPadded, cv::DFT_REAL_OUTPUT+cv::DFT_SCALE, this->src.rows + this->filter.rows);
     cv::normalize(this->srcPadded, this->srcPadded, 0, 1, CV_MINMAX);
     this->srcPadded(cv::Rect(this->filter.cols/2,this->filter.rows/2, this->src.cols, this->src.rows)).convertTo(this->dst, this->src.type(), 255, 0);
-
-    cv::Mat resultImshow = this->GetSpectrumImg(this->srcPadded(cv::Rect(this->filter.cols/2,this->filter.rows/2, this->src.cols, this->src.rows)));
-    imshow("result after idft", resultImshow);
-
     return;
 }
