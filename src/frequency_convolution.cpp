@@ -26,7 +26,7 @@ void FrequencyConvolution::MUL()
 
 void FrequencyConvolution::IFFT()
 {
-    cv::idft(this->spectrumImgCplx, this->srcPadded, cv::DFT_REAL_OUTPUT+cv::DFT_SCALE, this->src.rows + this->filter.rows);
+    cv::dft(this->spectrumImgCplx, this->srcPadded, cv::DFT_REAL_OUTPUT | cv::DFT_SCALE | cv::DFT_INVERSE, this->src.rows + this->filter.rows);
     cv::normalize(this->srcPadded, this->srcPadded, 0, 1, CV_MINMAX);
     this->srcPadded(cv::Rect(this->filter.cols/2,this->filter.rows/2, this->src.cols, this->src.rows)).convertTo(this->dst, this->src.type(), 255, 0);
     return;
