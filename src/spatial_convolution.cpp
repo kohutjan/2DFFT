@@ -4,52 +4,70 @@ using namespace cv;
 
 void SpatialConvolution::Regular()
 {
-    for(int row = (this->filter.rows / 2); row < this->src.rows - (this->filter.rows / 2); ++row)
-	{
-        for(int col = (this->filter.cols / 2); col < this->src.cols - (this->filter.cols / 2); ++col)
-		{
+    Size paddedSize;
+    paddedSize.width = this->src.cols + this->filter.cols;
+    paddedSize.height = this->src.rows + this->filter.rows;
+    Mat padded = Mat::zeros(paddedSize, this->dst.type());
+    this->src.copyTo(padded(Rect(this->filter.cols/2, this->filter.rows/2, this->src.cols, this->src.rows)));
+
+    for(int row = (this->filter.rows / 2); row < padded.rows - (this->filter.rows / 2); ++row)
+    {
+        for(int col = (this->filter.cols / 2); col < padded.cols - (this->filter.cols / 2); ++col)
+        {
             float convolutionSum = 0;
             for (int rowk = -(this->filter.rows / 2); rowk <= (this->filter.rows / 2); ++rowk)
-			{
+            {
                 for (int colk = -(this->filter.cols / 2); colk <= (this->filter.cols / 2); ++colk)
-				{
-                    convolutionSum += this->src.at<float>(row + rowk, col + colk) * this->filter.at<float>(rowk + (this->filter.rows / 2), colk + (this->filter.cols / 2));
-				}
-			}
-            this->dst.at<float>(row, col) = convolutionSum;
-		}
-	}
+                {
+                    convolutionSum += padded.at<float>(row + rowk, col + colk) * this->filter.at<float>(rowk + (this->filter.rows / 2), colk + (this->filter.cols / 2));
+                }
+            }
+            padded.at<float>(row, col) = convolutionSum;
+        }
+    }
+
+    padded(Rect(this->filter.cols/2, this->filter.rows/2, this->src.cols, this->src.rows)).copyTo(this->dst);
     return;
 }
 
 void SpatialConvolution::Separable()
 {
-    for(int row = (this->kernelY.rows / 2); row < this->src.rows - (this->kernelY.rows / 2); ++row)
+    Size paddedSize;
+    paddedSize.width = this->src.cols + this->kernelX.cols;
+    paddedSize.height = this->src.rows + this->kernelY.rows;
+    Mat paddedSrc = Mat::zeros(paddedSize, this->dst.type());
+    Mat paddedDst = Mat::zeros(paddedSize, this->dst.type());
+    this->src.copyTo(paddedSrc(Rect(this->kernelX.cols/2, this->kernelY.rows/2, this->src.cols, this->src.rows)));
+
+    for(int row = (this->kernelY.rows / 2); row < paddedSrc.rows - (this->kernelY.rows / 2); ++row)
     {
-        for(int col = (this->kernelX.cols / 2); col < this->src.cols - (this->kernelX.cols / 2); ++col)
+        for(int col = (this->kernelX.cols / 2); col < paddedSrc.cols - (this->kernelX.cols / 2); ++col)
         {
             float convolutionSum = 0;
             for (int colk = -(this->kernelX.cols / 2); colk <= (this->kernelX.cols / 2); ++colk)
             {
-                convolutionSum += this->src.at<float>(row, col + colk) * this->kernelX.at<float>(0, colk + (this->kernelX.cols / 2));
+                convolutionSum += paddedSrc.at<float>(row, col + colk) * this->kernelX.at<float>(0, colk + (this->kernelX.cols / 2));
             }
-            this->dst.at<float>(row, col) = convolutionSum;
+            paddedDst.at<float>(row, col) = convolutionSum;
         }
     }
 
-    for(int col = (this->kernelX.cols / 2); col < this->dst.cols - (this->kernelX.cols / 2); ++col)
+    paddedDst.copyTo(paddedSrc);
+
+    for(int col = (this->kernelX.cols / 2); col < paddedSrc.cols - (this->kernelX.cols / 2); ++col)
     {
-        for(int row = (this->kernelY.rows / 2); row < this->dst.rows - (this->kernelY.rows / 2); ++row)
+        for(int row = (this->kernelY.rows / 2); row < paddedSrc.rows - (this->kernelY.rows / 2); ++row)
         {
             float convolutionSum = 0;
             for (int rowk = -(this->kernelY.rows / 2); rowk <= (this->kernelY.rows / 2); ++rowk)
             {
-                convolutionSum += this->dst.at<float>(row + rowk, col) * this->kernelY.at<float>(rowk + (this->kernelY.rows / 2), 0);
+                convolutionSum += paddedSrc.at<float>(row + rowk, col) * this->kernelY.at<float>(rowk + (this->kernelY.rows / 2), 0);
             }
-            this->dst.at<float>(row, col) = convolutionSum;
+            paddedDst.at<float>(row, col) = convolutionSum;
         }
     }
 
+    paddedDst(Rect(this->kernelX.cols/2, this->kernelY.rows/2, this->src.cols, this->src.rows)).copyTo(this->dst);
     return;
 }
 

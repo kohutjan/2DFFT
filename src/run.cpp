@@ -69,8 +69,8 @@ bool Run::Start(bool show)
           for (int i = 0; i < this->iterations; ++i)
           {
             auto beginSeparable = chrono::high_resolution_clock::now();
-            //spatialConvolution.Separable();
-            spatialConvolution.OpenCVSeparable();
+            spatialConvolution.Separable();
+            //spatialConvolution.OpenCVSeparable();
             auto endSeparable = chrono::high_resolution_clock::now();
             duration += endSeparable - beginSeparable;
           }
