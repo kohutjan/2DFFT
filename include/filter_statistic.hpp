@@ -16,7 +16,9 @@ class FilterStatistic
     std::map<std::string, std::chrono::duration<double>> FFTFilterDurations;
     std::map<std::string, std::chrono::duration<double>> MULDurations;
     std::map<std::string, std::chrono::duration<double>> IFFTDurations;
-    std::map<std::string, std::chrono::duration<double>> frequentialDurations;
+    std::map<std::string, std::chrono::duration<double>> frequencyDurations;
+    std::map<std::string, std::chrono::duration<double>> openCVFilter2DDurations;
+    std::map<std::string, std::chrono::duration<double>> openCVSeparableDurations;
     ~FilterStatistic(){}
 };
 
