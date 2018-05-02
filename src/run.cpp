@@ -59,6 +59,10 @@ bool Run::Start()
             }
           }
         }
+        if (this->verbose)
+        {
+          cout << "Spatial iterations DONE." << endl;
+        }
         this->statistics[filterName].spatialDurations[imagePath] = duration;
 
         if (this->show)
@@ -92,6 +96,10 @@ bool Run::Start()
                 cout << (i + 1) << " separable iterations DONE." << endl;
               }
             }
+          }
+          if (this->verbose)
+          {
+            cout << "Separable iterations DONE." << endl;
           }
 
           this->statistics[filterName].separableDurations[imagePath] = duration;
@@ -139,6 +147,10 @@ bool Run::Start()
             }
           }
         }
+        if (this->verbose)
+        {
+          cout << "Frequency iterations DONE." << endl;
+        }
         duration = durationFFTImg + durationFFTFilter + durationMUL + durationIFFT;
         this->statistics[filterName].FFTImgDurations[imagePath] = durationFFTImg;
         this->statistics[filterName].FFTFilterDurations[imagePath] = durationFFTFilter;
@@ -178,6 +190,10 @@ bool Run::Start()
             }
           }
         }
+        if (this->verbose)
+        {
+          cout << "OpenCV_filter2D iterations DONE." << endl;
+        }
         this->statistics[filterName].openCVFilter2DDurations[imagePath] = duration;
 
         if (this->show)
@@ -211,6 +227,10 @@ bool Run::Start()
                 cout << (i + 1) << " OpenCV_separable iterations DONE." << endl;
               }
             }
+          }
+          if (this->verbose)
+          {
+            cout << "OpenCV_separable iterations DONE." << endl;
           }
 
           this->statistics[filterName].openCVSeparableDurations[imagePath] = duration;
