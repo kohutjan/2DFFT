@@ -5,13 +5,18 @@ using namespace std;
 using namespace cv;
 
 
-bool Run::Start(bool show)
+bool Run::Start()
 {
   SpatialConvolution spatialConvolution;
   FrequencyConvolution frequencyConvolution;
 
   for (auto& imagePath: this->imagePaths)
   {
+    if (this->verbose)
+    {
+      cout << "Measuring time on " << imagePath << endl;
+      cout << "-------------------------------------------------------------" << endl;
+    }
     Mat src = imread(imagePath, CV_LOAD_IMAGE_GRAYSCALE);
     if(!src.data)
     {
@@ -22,13 +27,16 @@ bool Run::Start(bool show)
 
     for (auto& filterName: this->filtersInsertOrder)
     {
+      if (this->verbose)
+      {
+        cout << "Measuring time for " << filterName << endl;
+        cout << "-------------------------------------------------------------" << endl;
+      }
       //OpenCV Mat for filter: filter.second
 
       if (this->spatial)
       {
         //Prepare spatial convolution
-       // Mat flipedFilter = this->filters[filterName].getValues().clone();
-        //flip(this->filters[filterName].getValues(), flipedFilter, -1);
         Mat srcF;
         Mat dstF;
         src.convertTo(srcF, CV_32FC1);
@@ -41,19 +49,24 @@ bool Run::Start(bool show)
         {
           auto beginSpatial = chrono::high_resolution_clock::now();
           spatialConvolution.Regular();
-          //spatialConvolution.OpenCVRegular();
           auto endSpatial = chrono::high_resolution_clock::now();
           duration += endSpatial - beginSpatial;
+          if (this->verbose)
+          {
+            if ((i + 1) % 100 == 0)
+            {
+              cout << (i + 1) << " spatial iterations DONE." << endl;
+            }
+          }
         }
         this->statistics[filterName].spatialDurations[imagePath] = duration;
 
-        if (show)
+        if (this->show)
         {
           dstF.convertTo(dst, CV_8UC1);
           imshow(filterName + " spatial regular", dst);
         }
       }
-
       if (this->separable)
       {
         Mat kernelX, kernelY;
@@ -70,14 +83,20 @@ bool Run::Start(bool show)
           {
             auto beginSeparable = chrono::high_resolution_clock::now();
             spatialConvolution.Separable();
-            //spatialConvolution.OpenCVSeparable();
             auto endSeparable = chrono::high_resolution_clock::now();
             duration += endSeparable - beginSeparable;
+            if (this->verbose)
+            {
+              if ((i + 1) % 100 == 0)
+              {
+                cout << (i + 1) << " separable iterations DONE." << endl;
+              }
+            }
           }
 
           this->statistics[filterName].separableDurations[imagePath] = duration;
 
-          if (show)
+          if (this->show)
           {
             dstF.convertTo(dst, CV_8UC1);
             imshow(filterName + " spatial separable", dst);
@@ -112,22 +131,105 @@ bool Run::Start(bool show)
           durationFFTFilter += endFFTFilter - beginFFTFilter;
           durationMUL += endMUL - beginMUL;
           durationIFFT += endIFFT - beginIFFT;
+          if (this->verbose)
+          {
+            if ((i + 1) % 100 == 0)
+            {
+              cout << (i + 1) << " frequency iterations DONE." << endl;
+            }
+          }
         }
         duration = durationFFTImg + durationFFTFilter + durationMUL + durationIFFT;
         this->statistics[filterName].FFTImgDurations[imagePath] = durationFFTImg;
         this->statistics[filterName].FFTFilterDurations[imagePath] = durationFFTFilter;
         this->statistics[filterName].MULDurations[imagePath] = durationMUL;
         this->statistics[filterName].IFFTDurations[imagePath] = durationIFFT;
-        this->statistics[filterName].frequentialDurations[imagePath] = duration;
+        this->statistics[filterName].frequencyDurations[imagePath] = duration;
 
-        if (show)
+        if (this->show)
         {
           imshow(filterName + " frequency", dst);
         }
       }
+      if (this->openCVFilter2D)
+      {
+        //Prepare spatial convolution
+        Mat flipedFilter = this->filters[filterName].getValues().clone();
+        flip(this->filters[filterName].getValues(), flipedFilter, -1);
+        Mat srcF;
+        Mat dstF;
+        src.convertTo(srcF, CV_32FC1);
+        dst.convertTo(dstF, CV_32FC1);
+        spatialConvolution.setData(srcF, dstF, flipedFilter);
 
+        //Measure time
+        chrono::duration<double, std::milli> duration = std::chrono::milliseconds::zero();
+        for (int i = 0; i < this->iterations; ++i)
+        {
+          auto beginSpatial = chrono::high_resolution_clock::now();
+          spatialConvolution.OpenCVRegular();
+          auto endSpatial = chrono::high_resolution_clock::now();
+          duration += endSpatial - beginSpatial;
+          if (this->verbose)
+          {
+            if ((i + 1) % 100 == 0)
+            {
+              cout << (i + 1) << " OpenCV_filter2D iterations DONE." << endl;
+            }
+          }
+        }
+        this->statistics[filterName].openCVFilter2DDurations[imagePath] = duration;
+
+        if (this->show)
+        {
+          dstF.convertTo(dst, CV_8UC1);
+          imshow(filterName + " OpenCV filter2D ", dst);
+        }
+      }
+      if (this->openCVSeparable)
+      {
+        Mat kernelX, kernelY;
+        if (isSeparable(this->filters[filterName].getValues(), kernelX, kernelY))
+        {
+          Mat srcF;
+          Mat dstF;
+          src.convertTo(srcF, CV_32FC1);
+          dst.convertTo(dstF, CV_32FC1);
+          spatialConvolution.setData(srcF, dstF, kernelX, kernelY);
+
+          chrono::duration<double, std::milli> duration = std::chrono::milliseconds::zero();
+          for (int i = 0; i < this->iterations; ++i)
+          {
+            auto beginSeparable = chrono::high_resolution_clock::now();
+            spatialConvolution.OpenCVSeparable();
+            auto endSeparable = chrono::high_resolution_clock::now();
+            duration += endSeparable - beginSeparable;
+            if (this->verbose)
+            {
+              if ((i + 1) % 100 == 0)
+              {
+                cout << (i + 1) << " OpenCV_separable iterations DONE." << endl;
+              }
+            }
+          }
+
+          this->statistics[filterName].openCVSeparableDurations[imagePath] = duration;
+
+          if (this->show)
+          {
+            dstF.convertTo(dst, CV_8UC1);
+            imshow(filterName + " OpenCV separable", dst);
+          }
+        }
+      }
+
+      if (this->verbose)
+      {
+        cout << "-------------------------------------------------------------" << endl;
+        cout << endl;
+      }
     }
-    if (show)
+    if (this->show)
     {
       waitKey(0);
     }
@@ -167,10 +269,14 @@ bool Run::Print(string statisticsFilePath)
 
 void Run::PrintToStream(ostream &statisticsStream)
 {
+  statisticsStream.precision(3);
+  statisticsStream << scientific;
   statisticsStream << "_____________________________________________________________" << endl;
   statisticsStream << endl;
   statisticsStream << "iterations per image: " << this->iterations << endl;
   statisticsStream << "format: imagePath [spatial_duration] [separable_duration] [frequency_duration]" << endl;
+  statisticsStream << "                  [frequency_image] [frequency_filter] [frequency_mul] [frequency_inverse]" << endl;
+  statisticsStream << "                  [OpenCV_filter2D] [OpenCV_separable]" << endl;
   statisticsStream << "_____________________________________________________________" << endl;
   statisticsStream << endl;
 
@@ -203,8 +309,45 @@ void Run::PrintToStream(ostream &statisticsStream)
       }
       if (this->frequency)
       {
-        double meanDuration = this->statistics[filterName].frequentialDurations[imagePath].count() / this->iterations;
+        double meanDuration = this->statistics[filterName].frequencyDurations[imagePath].count() / this->iterations;
         statisticsStream <<  meanDuration << " ";
+      }
+      if (this->frequencyImage)
+      {
+        double meanDuration = this->statistics[filterName].FFTImgDurations[imagePath].count() / this->iterations;
+        statisticsStream << meanDuration << " ";
+      }
+      if (this->frequencyFilter)
+      {
+        double meanDuration = this->statistics[filterName].FFTFilterDurations[imagePath].count() / this->iterations;
+        statisticsStream << meanDuration << " ";
+      }
+      if (this->frequencyMul)
+      {
+        double meanDuration = this->statistics[filterName].MULDurations[imagePath].count() / this->iterations;
+        statisticsStream << meanDuration << " ";
+      }
+      if (this->frequencyInverse)
+      {
+        double meanDuration = this->statistics[filterName].IFFTDurations[imagePath].count() / this->iterations;
+        statisticsStream << meanDuration << " ";
+      }
+      if (this->openCVFilter2D)
+      {
+        double meanDuration = this->statistics[filterName].openCVFilter2DDurations[imagePath].count() / this->iterations;
+        statisticsStream << meanDuration << " ";
+      }
+      if (this->openCVSeparable)
+      {
+        if (!this->statistics[filterName].openCVSeparableDurations.empty())
+        {
+          double meanDuration = this->statistics[filterName].openCVSeparableDurations[imagePath].count() / this->iterations;
+          statisticsStream << meanDuration << " ";
+        }
+        else
+        {
+          statisticsStream << "unsep ";
+        }
       }
       statisticsStream << endl;
     }
@@ -274,6 +417,42 @@ void Run::LoadFromStream(ifstream &runStream)
     if (paramName == "frequency")
     {
       this->frequency = true;
+      cout << paramName << endl;
+      continue;
+    }
+    if (paramName == "frequency_image")
+    {
+      this->frequencyImage = true;
+      cout << paramName << endl;
+      continue;
+    }
+    if (paramName == "frequency_filter")
+    {
+      this->frequencyFilter = true;
+      cout << paramName << endl;
+      continue;
+    }
+    if (paramName == "frequency_mul")
+    {
+      this->frequencyMul = true;
+      cout << paramName << endl;
+      continue;
+    }
+    if (paramName == "frequency_inverse")
+    {
+      this->frequencyInverse = true;
+      cout << paramName << endl;
+      continue;
+    }
+    if (paramName == "OpenCV_filter2D")
+    {
+      this->openCVFilter2D = true;
+      cout << paramName << endl;
+      continue;
+    }
+    if (paramName == "OpenCV_separable")
+    {
+      this->openCVSeparable = true;
       cout << paramName << endl;
       continue;
     }
@@ -348,21 +527,4 @@ bool Run::isSeparable(Mat kernel, Mat &kernelX, Mat &kernelY)
 void Run::AddImagePath(string path)
 {
     this->imagePaths.push_back(path);
-}
-
-void Run::SetIterations(int iterations)
-{
-    this->iterations = iterations;
-}
-
-void Run::SetConvolutions(bool regular_spatial, bool separable_spatial, bool frequency)
-{
-    this->spatial = regular_spatial;
-    this->separable = separable_spatial;
-    this->frequency = frequency;
-}
-
-vector<string> Run::GetImagePaths()
-{
-    return this->imagePaths;
 }

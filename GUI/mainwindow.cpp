@@ -276,14 +276,14 @@ void MainWindow::on_playForward_clicked()
     run.AddImagePath(this->playInputPath);
     run.setFilters(filters, filtersInsertOrder);
     run.InitFilterStatistics();
-    run.Start(false);
+    run.Start();
     FilterStatistic statistic = run.statistics[filterType];
     double spatialDuration = statistic.spatialDurations[this->playInputPath].count();
     double FFTImgDuration = statistic.FFTImgDurations[this->playInputPath].count();
     double FFTFilterDuration = statistic.FFTFilterDurations[this->playInputPath].count();
     double MULDuration = statistic.MULDurations[this->playInputPath].count();
     double IFFTDuration = statistic.IFFTDurations[this->playInputPath].count();
-    double FFTDuration = statistic.frequentialDurations[this->playInputPath].count();
+    double FFTDuration = statistic.frequencyDurations[this->playInputPath].count();
     QString separableDuration;
     if (not statistic.separableDurations.empty())
     {
@@ -542,7 +542,7 @@ void MainWindow::on_ana_run_button_clicked()
         filtersInsertOrder.push_back(filter_name_std);
         analytics_run->setFilters(filters, filtersInsertOrder);
         analytics_run->InitFilterStatistics();
-        analytics_run->Start(true); //nastavit na true pro kontrolu vysledku filtrace
+        analytics_run->Start();
 
         if (reg_con)
         {
@@ -597,7 +597,7 @@ void MainWindow::on_ana_run_button_clicked()
             double meanDuration = 0.0;
             for (auto& imagePath: imagePaths)
             {
-                meanDuration += analytics_run->statistics[filter_name_std].frequentialDurations[imagePath].count() / iterations;
+                meanDuration += analytics_run->statistics[filter_name_std].frequencyDurations[imagePath].count() / iterations;
             }
             meanDuration = meanDuration / imagePaths.size();
 
