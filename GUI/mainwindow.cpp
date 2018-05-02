@@ -303,7 +303,8 @@ void MainWindow::on_playForward_clicked()
     {
         run.SetConvolutions(true, true, true);
     }
-    run.SetIterations(1);
+    int numberOfIterations = 5;
+    run.SetIterations(numberOfIterations);
     run.AddImagePath(this->playInputPath);
     run.setFilters(filters, filtersInsertOrder);
     run.InitFilterStatistics();
@@ -312,23 +313,23 @@ void MainWindow::on_playForward_clicked()
     double spatialDuration;
     if (convolutionType == "OpenCV")
     {
-        spatialDuration = statistic.openCVFilter2DDurations[this->playInputPath].count();
+        spatialDuration = statistic.openCVFilter2DDurations[this->playInputPath].count() / numberOfIterations;
     }
     else
     {
-        spatialDuration = statistic.spatialDurations[this->playInputPath].count();
+        spatialDuration = statistic.spatialDurations[this->playInputPath].count() / numberOfIterations;
     }
-    double FFTImgDuration = statistic.FFTImgDurations[this->playInputPath].count();
-    double FFTFilterDuration = statistic.FFTFilterDurations[this->playInputPath].count();
-    double MULDuration = statistic.MULDurations[this->playInputPath].count();
-    double IFFTDuration = statistic.IFFTDurations[this->playInputPath].count();
-    double FFTDuration = statistic.frequencyDurations[this->playInputPath].count();
+    double FFTImgDuration = statistic.FFTImgDurations[this->playInputPath].count() / numberOfIterations;
+    double FFTFilterDuration = statistic.FFTFilterDurations[this->playInputPath].count() / numberOfIterations;
+    double MULDuration = statistic.MULDurations[this->playInputPath].count() / numberOfIterations;
+    double IFFTDuration = statistic.IFFTDurations[this->playInputPath].count() / numberOfIterations;
+    double FFTDuration = statistic.frequencyDurations[this->playInputPath].count() / numberOfIterations;
     QString separableDuration;
     if (convolutionType == "OpenCV")
     {
         if (not statistic.openCVSeparableDurations.empty())
         {
-            separableDuration = QString::number(statistic.openCVSeparableDurations[this->playInputPath].count()) + " ms";
+            separableDuration = QString::number(statistic.openCVSeparableDurations[this->playInputPath].count() / numberOfIterations) + " ms";
         }
         else
         {
@@ -339,7 +340,7 @@ void MainWindow::on_playForward_clicked()
     {
         if (not statistic.separableDurations.empty())
         {
-            separableDuration = QString::number(statistic.separableDurations[this->playInputPath].count()) + " ms";
+            separableDuration = QString::number(statistic.separableDurations[this->playInputPath].count() / numberOfIterations) + " ms";
         }
         else
         {
