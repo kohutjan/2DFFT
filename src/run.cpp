@@ -295,8 +295,9 @@ void Run::PrintToStream(ostream &statisticsStream)
   statisticsStream << endl;
   statisticsStream << "iterations per image: " << this->iterations << endl;
   statisticsStream << "format: imagePath [spatial_duration] [separable_duration] [frequency_duration]" << endl;
-  statisticsStream << "                  [frequency_image] [frequency_filter] [frequency_mul] [frequency_inverse]" << endl;
-  statisticsStream << "                  [OpenCV_filter2D] [OpenCV_separable]" << endl;
+  statisticsStream << "                  [frequency_image_duration] [frequency_filter_duration]" << endl;
+  statisticsStream << "                  [frequency_mul_duration] [frequency_inverse_duration]" << endl;
+  statisticsStream << "                  [OpenCV_filter2D_duration] [OpenCV_separable_duration]" << endl;
   statisticsStream << "_____________________________________________________________" << endl;
   statisticsStream << endl;
 

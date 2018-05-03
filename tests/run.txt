@@ -1,7 +1,8 @@
-images 2 
+images 3
 ../tests/images/norway0.jpg
 ../tests/images/norway1.jpg
-iterations 100
+../tests/images/norway2.jpg
+iterations 200
 spatial
 separable
 frequency
