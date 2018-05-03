@@ -72,10 +72,10 @@ MainWindow::MainWindow(QWidget *parent) :
     axisX->setGridLineVisible(false);
     axisX->setLabelFormat("%d");
 
-    axisY->setTitleText("Computation time [s]");
+    axisY->setTitleText("Computation time [ms]");
     axisY->setLabelsBrush(axisBrush);
     axisY->setGridLineVisible(false);
-    axisY->setLabelFormat("%0.10e");
+    axisY->setLabelFormat("%0.3e");
 
     chart->setAxisX(axisX);
     chart->setAxisY(axisY);
@@ -430,6 +430,8 @@ void MainWindow::on_ana_run_button_clicked()
     bool reg_con = false;
     bool sep_con = false;
     bool fr_con = false;
+    bool reg_con_cv = false;
+    bool sep_con_cv = false;
 
     if (ui->ana_reg_spatial_con_check->isChecked())
     {
@@ -441,12 +443,22 @@ void MainWindow::on_ana_run_button_clicked()
         sep_con = true;
     }
 
+    if (ui->ana_reg_spatial_con_check_cv->isChecked())
+    {
+        reg_con_cv = true;
+    }
+
+    if (ui->ana_sep_spatial_con_check_cv->isChecked())
+    {
+        sep_con_cv = true;
+    }
+
     if (ui->ana_frequential_con_check->isChecked())
     {
         fr_con = true;
     }
 
-    if (!(reg_con || sep_con || fr_con))
+    if (!(reg_con || sep_con || fr_con || reg_con_cv || sep_con_cv))
     {
         ui->ana_error_out_label->setStyleSheet("QLabel { color: red }");
         ui->ana_error_out_label->setText("Error: Please choose at least one convolution type.");
@@ -455,6 +467,7 @@ void MainWindow::on_ana_run_button_clicked()
     else
     {
         analytics_run->SetConvolutions(reg_con, sep_con, fr_con);
+        analytics_run->SetOpenCVConvolutions(reg_con_cv, sep_con_cv);
         ui->ana_error_out_label->setText("");
     }
 
@@ -504,10 +517,14 @@ void MainWindow::on_ana_run_button_clicked()
     FilterLoader *filter_loader = new FilterLoader();
     QLineSeries *regular = new QLineSeries;
     QLineSeries *separable = new QLineSeries;
+    QLineSeries *regular_cv = new QLineSeries;
+    QLineSeries *separable_cv = new QLineSeries;
     QLineSeries *frequential = new QLineSeries;
 
     QScatterSeries *regular_scatter = new QScatterSeries;
     QScatterSeries *separable_scatter = new QScatterSeries;
+    QScatterSeries *regular_scatter_cv = new QScatterSeries;
+    QScatterSeries *separable_scatter_cv = new QScatterSeries;
     QScatterSeries *frequential_scatter = new QScatterSeries;
 
     if (max_size == min_size)
@@ -528,12 +545,28 @@ void MainWindow::on_ana_run_button_clicked()
             separable_scatter->setName("separable spatial convolution");
         }
 
+        if (reg_con_cv)
+        {
+            ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->addSeries(regular_scatter_cv);
+            regular_scatter_cv->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisX());
+            regular_scatter_cv->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisY());
+            regular_scatter_cv->setName("Filter2D OpenCV");
+        }
+
+        if (sep_con_cv)
+        {
+            ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->addSeries(separable_scatter_cv);
+            separable_scatter_cv->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisX());
+            separable_scatter_cv->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisY());
+            separable_scatter_cv->setName("sepFilter2D OpenCV");
+        }
+
         if (fr_con)
         {
             ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->addSeries(frequential_scatter);
             frequential_scatter->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisX());
             frequential_scatter->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisY());
-            frequential_scatter->setName("frequential spatial convolution");
+            frequential_scatter->setName("frequency convolution");
         }
 
         ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisX()->setRange(max_size - 2, max_size + 2);
@@ -556,12 +589,28 @@ void MainWindow::on_ana_run_button_clicked()
             separable->setName("separable spatial convolution");
         }
 
+        if (reg_con_cv)
+        {
+            ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->addSeries(regular_cv);
+            regular_cv->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisX());
+            regular_cv->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisY());
+            regular_cv->setName("Filter2D OpenCV");
+        }
+
+        if (sep_con_cv)
+        {
+            ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->addSeries(separable_cv);
+            separable_cv->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisX());
+            separable_cv->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisY());
+            separable_cv->setName("sepFilter2D OpenCV");
+        }
+
         if (fr_con)
         {
             ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->addSeries(frequential);
             frequential->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisX());
             frequential->attachAxis(ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisY());
-            frequential->setName("frequential spatial convolution");
+            frequential->setName("frequency convolution");
         }
 
         ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisX()->setRange(min_size, max_size);
@@ -622,6 +671,30 @@ void MainWindow::on_ana_run_button_clicked()
             }
         }
 
+        if (reg_con_cv)
+        {
+            double meanDuration = 0.0;
+            for (auto& imagePath: imagePaths)
+            {
+              meanDuration += analytics_run->statistics[filter_name_std].openCVFilter2DDurations[imagePath].count() / iterations;
+            }
+            meanDuration = meanDuration / imagePaths.size();
+
+            if (max_size == min_size)
+            {
+                regular_scatter_cv->append(i, meanDuration);
+            }
+            else
+            {
+                regular_cv->append(i, meanDuration);
+            }
+
+            if (maxDuration < meanDuration)
+            {
+                maxDuration = meanDuration;
+            }
+        }
+
         if (sep_con)
         {
             double meanDuration = 0.0;
@@ -645,6 +718,31 @@ void MainWindow::on_ana_run_button_clicked()
                 maxDuration = meanDuration;
             }
         }
+
+        if (sep_con_cv)
+        {
+            double meanDuration = 0.0;
+            for (auto& imagePath: imagePaths)
+            {
+              meanDuration += analytics_run->statistics[filter_name_std].openCVSeparableDurations[imagePath].count() / iterations;
+            }
+            meanDuration = meanDuration / imagePaths.size();
+
+            if (max_size == min_size)
+            {
+                separable_scatter_cv->append(i, meanDuration);
+            }
+            else
+            {
+                separable_cv->append(i, meanDuration);
+            }
+
+            if (maxDuration < meanDuration)
+            {
+                maxDuration = meanDuration;
+            }
+        }
+
 
         if (fr_con)
         {
