@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="playground_tab">
        <attribute name="title">
@@ -1087,7 +1087,7 @@
                    <item>
                     <widget class="QCheckBox" name="ana_frequential_con_check">
                      <property name="text">
-                      <string>Frequential convolution</string>
+                      <string>Frequency convolution</string>
                      </property>
                     </widget>
                    </item>
@@ -1121,6 +1121,20 @@
                      </property>
                      <property name="text">
                       <string>Dynamic sigma</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="ana_reg_spatial_con_check_cv">
+                     <property name="text">
+                      <string>Filter2D OpenCV</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="ana_sep_spatial_con_check_cv">
+                     <property name="text">
+                      <string>sepFilter2D OpenCV</string>
                      </property>
                     </widget>
                    </item>
