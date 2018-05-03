@@ -1,7 +1,13 @@
 images 2 
 ../tests/images/norway0.jpg
 ../tests/images/norway1.jpg
-iterations 500
+iterations 100
 spatial
 separable
 frequency
+frequency_image
+frequency_filter
+frequency_mul
+frequency_inverse
+OpenCV_filter2D
+OpenCV_separable

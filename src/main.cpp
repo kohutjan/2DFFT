@@ -72,7 +72,12 @@ int main(int argc, char **argv)
   {
     run.setFilters(filterLoader.getFilters(), filterLoader.getFiltersInsertOrder());
     run.InitFilterStatistics();
-    run.Start(show);
+    if (show)
+    {
+      run.SetShow();
+    }
+    run.SetVerbose();
+    run.Start();
     if (statisticsFilePath.empty())
     {
       run.Print();

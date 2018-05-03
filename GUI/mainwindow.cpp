@@ -117,8 +117,14 @@ void MainWindow::on_playLoadImg_clicked()
       this->playInputImg = imread(this->playInputPath, CV_LOAD_IMAGE_GRAYSCALE);
       Mat inputSpectrumImg = this->GetSpectrumImg(this->playInputImg);
       this->SetImgToLabel(ui->playSpecInput, inputSpectrumImg);
-      ui->play2DFiltersCombo->setEnabled(true);
-      ui->playSpecFiltersCombo->setEnabled(true);
+      if (ui->playSpecFiltersCombo->currentText().isEmpty())
+      {
+          ui->play2DFiltersCombo->setEnabled(true);
+      }
+      if (ui->play2DFiltersCombo->currentText().isEmpty())
+      {
+          ui->playSpecFiltersCombo->setEnabled(true);
+      }
     }
 }
 
@@ -130,6 +136,14 @@ void MainWindow::playSetFilter()
     {
         int kernelSize = ui->playKernelSizeSpin->value();
         this->playFilter = this->filterLoader.Get2DFilter(filter2DType, filter2DType, kernelSize).getValues();
+        if (filter2DType == "SobelX" || filter2DType == "SobelY")
+        {
+            ui->playKernelSizeSpin->setValue(3);
+        }
+        if (filter2DType == "DoG" && kernelSize == 3)
+        {
+            ui->playKernelSizeSpin->setValue(5);
+        }
     }
     if (not filterSpecType.empty())
     {
@@ -148,7 +162,7 @@ void MainWindow::playShowFilter()
     Mat filterGray;
     double min, max;
     minMaxLoc(this->playFilter, &min, &max);
-    if (abs(min - max) < 0.001)
+    if (abs(min - max) < 0.000001)
     {
         this->playFilter.convertTo(filterGray, CV_32F, 0, 0.5);
     }
@@ -232,17 +246,26 @@ void MainWindow::playRadiusSelection()
 
 void MainWindow::on_playForward_clicked()
 {
+    string convolutionType = ui->playConvolutionType->currentText().toStdString();
     // Prepare spatial convolution
-    Mat flipedFilter = this->playFilter.clone();
-    flip(this->playFilter, flipedFilter, -1);
-    Mat src = this->playInputImg.clone();
-    Mat dst = this->playInputImg.clone();
     Mat srcF;
     Mat dstF;
+    Mat src = this->playInputImg.clone();
+    Mat dst = this->playInputImg.clone();
     src.convertTo(srcF, CV_32FC1);
     dst.convertTo(dstF, CV_32FC1);
-    spatialConvolution.setData(srcF, dstF, flipedFilter);
-    spatialConvolution.OpenCVRegular();
+    if (convolutionType == "OpenCV")
+    {
+        Mat flipedFilter = this->playFilter.clone();
+        flip(this->playFilter, flipedFilter, -1);
+        spatialConvolution.setData(srcF, dstF, flipedFilter);
+        spatialConvolution.OpenCVRegular();
+    }
+    else
+    {
+        spatialConvolution.setData(srcF, dstF, this->playFilter);
+        spatialConvolution.Regular();
+    }
     normalize(dstF, dstF, 0, 1, CV_MINMAX);
     dstF.convertTo(dst, CV_8UC1, 255);
     // Show ouptut
@@ -271,27 +294,57 @@ void MainWindow::on_playForward_clicked()
     filters[filterType] = filter;
     vector<string> filtersInsertOrder(1, filterType);
     Run run;
-    run.SetConvolutions(true, true, true);
+    if (convolutionType == "OpenCV")
+    {
+        run.SetConvolutions(false, false, true);
+        run.SetOpenCVConvolutions(true, true);
+    }
+    else
+    {
+        run.SetConvolutions(true, true, true);
+    }
     run.SetIterations(1);
     run.AddImagePath(this->playInputPath);
     run.setFilters(filters, filtersInsertOrder);
     run.InitFilterStatistics();
-    run.Start(false);
+    run.Start();
     FilterStatistic statistic = run.statistics[filterType];
-    double spatialDuration = statistic.spatialDurations[this->playInputPath].count();
+    double spatialDuration;
+    if (convolutionType == "OpenCV")
+    {
+        spatialDuration = statistic.openCVFilter2DDurations[this->playInputPath].count();
+    }
+    else
+    {
+        spatialDuration = statistic.spatialDurations[this->playInputPath].count();
+    }
     double FFTImgDuration = statistic.FFTImgDurations[this->playInputPath].count();
     double FFTFilterDuration = statistic.FFTFilterDurations[this->playInputPath].count();
     double MULDuration = statistic.MULDurations[this->playInputPath].count();
     double IFFTDuration = statistic.IFFTDurations[this->playInputPath].count();
-    double FFTDuration = statistic.frequentialDurations[this->playInputPath].count();
+    double FFTDuration = statistic.frequencyDurations[this->playInputPath].count();
     QString separableDuration;
-    if (not statistic.separableDurations.empty())
+    if (convolutionType == "OpenCV")
     {
-        separableDuration = QString::number(statistic.separableDurations[this->playInputPath].count());
+        if (not statistic.openCVSeparableDurations.empty())
+        {
+            separableDuration = QString::number(statistic.openCVSeparableDurations[this->playInputPath].count()) + " ms";
+        }
+        else
+        {
+            separableDuration = "inseparable";
+        }
     }
     else
     {
-        separableDuration = "inseparable";
+        if (not statistic.separableDurations.empty())
+        {
+            separableDuration = QString::number(statistic.separableDurations[this->playInputPath].count()) + " ms";
+        }
+        else
+        {
+            separableDuration = "inseparable";
+        }
     }
     // Show measured times
     ui->play2DInputFilterTime->setText(QString::number(spatialDuration, 'g', 3));
@@ -299,8 +352,8 @@ void MainWindow::on_playForward_clicked()
     ui->play2DFilterSpecFilterTime->setText(QString::number(FFTFilterDuration, 'g', 3));
     ui->playSpecInputFilterTime->setText(QString::number(MULDuration, 'g', 3));
     ui->play2DOutputSpecOutputTime->setText(QString::number(IFFTDuration, 'g', 3));
-    ui->play2DTime->setText("Spatial domain: " + QString::number(spatialDuration, 'g', 6));
-    ui->playSpecTime->setText("Frequential domain: " + QString::number(FFTDuration, 'g', 6));
+    ui->play2DTime->setText("Spatial domain: " + QString::number(spatialDuration, 'g', 6) + " ms");
+    ui->playSpecTime->setText("Frequential domain: " + QString::number(FFTDuration, 'g', 6) + " ms");
     ui->playSeparableTime->setText("Spatial domain (separable): " + separableDuration);
 }
 
@@ -542,7 +595,7 @@ void MainWindow::on_ana_run_button_clicked()
         filtersInsertOrder.push_back(filter_name_std);
         analytics_run->setFilters(filters, filtersInsertOrder);
         analytics_run->InitFilterStatistics();
-        analytics_run->Start(true); //nastavit na true pro kontrolu vysledku filtrace
+        analytics_run->Start();
 
         if (reg_con)
         {
@@ -597,7 +650,7 @@ void MainWindow::on_ana_run_button_clicked()
             double meanDuration = 0.0;
             for (auto& imagePath: imagePaths)
             {
-                meanDuration += analytics_run->statistics[filter_name_std].frequentialDurations[imagePath].count() / iterations;
+                meanDuration += analytics_run->statistics[filter_name_std].frequencyDurations[imagePath].count() / iterations;
             }
             meanDuration = meanDuration / imagePaths.size();
 
