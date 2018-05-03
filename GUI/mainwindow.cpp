@@ -386,7 +386,6 @@ void MainWindow::on_ana_dynamic_sig_rad_clicked()
 
 void MainWindow::on_ana_run_button_clicked()
 {
-    //ui->ana_menu_container->setEnabled(false);
     QDirIterator *imageIterator = new QDirIterator(ui->ana_path_label->text());
     if (!imageIterator->hasNext())
     {
@@ -616,7 +615,7 @@ void MainWindow::on_ana_run_button_clicked()
         ui->analytics_tab->findChild<QtCharts::QChartView *>("ana_chartview")->chart()->axisX()->setRange(min_size, max_size);
     }
 
-    if (step_size == 0) // zarazka, pokud je 0, tak min_size == max_size a for by cyklil nekonecne
+    if (step_size == 0) // if step_size is 0, then min_size == max_size and for would loop infinitely
     {
         step_size = 1;
     }
@@ -772,7 +771,6 @@ void MainWindow::on_ana_run_button_clicked()
     }
 
     ui->ana_error_out_label->setText("Info: Run finished.");
-    //ui->ana_menu_container->setEnabled(true);
 }
 
 void MainWindow::comboBoxAnaFilterSelection(const QString & selection_text)
