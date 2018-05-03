@@ -508,21 +508,11 @@ bool Run::isSeparable(Mat kernel, Mat &kernelX, Mat &kernelY)
   (rank != 0) and thus perform the appropriate convolution.
   */
   SVD::compute(kernel, sigma, u, vt);
-
-  int col = 0;
-  for (int row = 0; row < sigma.rows; row++) {
-    float* sigmaPtr = sigma.ptr<float>(row);
-    if (sigmaPtr[col] > 0.00001) //threshold for calculation errors, sigma values are never negative
+  for (auto it = sigma.begin<float>(); it != sigma.end<float>(); it++) {
+    if (*it > 0.00001) //threshold for calculation errors, sigma values are never negative
     {
        rank++;
     }
-
-    if (rank > 1)
-    {
-        break;
-    }
-
-    col++;
   }
 
   /*
