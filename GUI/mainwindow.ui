@@ -225,7 +225,7 @@
             </item>
             <item>
              <property name="text">
-              <string>Naive</string>
+              <string>Basic</string>
              </property>
             </item>
            </widget>
