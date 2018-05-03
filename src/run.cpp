@@ -513,6 +513,11 @@ bool Run::isSeparable(Mat kernel, Mat &kernelX, Mat &kernelY)
     {
        rank++;
     }
+
+    if (rank > 1)
+    {
+        break;
+    }
   }
 
   /*
