@@ -1,0 +1,22 @@
+cmake_minimum_required(VERSION 2.8.7)
+
+project(2DFFT)
+
+
+set(2DFFT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
+set(2DFFT_SRC_DIR ${PROJECT_SOURCE_DIR}/src)
+
+include_directories(${2DFFT_INCLUDE_DIR})
+include_directories(${2DFFT_SRC_DIR})
+
+add_executable(2dfft
+               ${2DFFT_SRC_DIR}/main.cpp
+               ${2DFFT_SRC_DIR}/run.cpp
+               ${2DFFT_SRC_DIR}/filter_loader.cpp
+               ${2DFFT_SRC_DIR}/spatial_convolution.cpp
+               ${2DFFT_SRC_DIR}/frequency_convolution.cpp)
+
+
+
+
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs -g -fopenmp -std=gnu++17 -Wall -Wextra -pedantic")
