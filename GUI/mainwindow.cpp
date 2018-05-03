@@ -472,8 +472,8 @@ void MainWindow::on_ana_run_button_clicked()
     }
 
     QString filter_name;
-    int filter_type;
-    int sigma;
+    int filter_type = -1;
+    int sigma = -1;
     if (ui->ana_filter_combo->currentIndex() == 0)
     {
         ui->ana_error_out_label->setStyleSheet("QLabel { color: red }");
